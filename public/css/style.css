@@ -1,0 +1,100 @@
+* {
+    box-sizing: border-box;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #f4f4f4;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    background: #00B8DE;
+    color: white;
+    padding: 10px;
+    gap: 15px;
+}
+
+.user-icon {
+    width: 35px;
+    height: 35px;
+    background: #ccc;
+    border-radius: 50%;
+}
+
+h1 {
+    margin: 0;
+}
+
+h1 a {
+    color: white;
+    text-decoration: none;
+}
+
+.search-bar {
+    margin-left: auto;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    margin: 20px;
+}
+
+.info-text {
+    color: red;
+    font-size: 14px;
+    max-width: 150px;
+}
+
+.form-section {
+    background: white;
+    padding: 20px;
+    border: 2px solid #99CC33;
+    border-radius: 10px;
+    width: 300px;
+}
+
+.input-box label {
+    display: block;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.input-box input,
+.input-box textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #00B8DE;
+    border-radius: 5px;
+}
+
+.image-section {
+    background: white;
+    padding: 20px;
+    border: 2px solid #99CC33;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.image-label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.image-upload-box {
+    border: 2px dashed #00B8DE;
+    padding: 40px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+

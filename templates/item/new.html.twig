@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Item{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="user-icon"></div>
+        <h1><a href="{{ path('app_item_index') }}">Item title</a></h1>
+        <input type="text" placeholder="Search…" class="search-bar">
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="form-section">
+                {{ form_start(form, {'attr': {'class': 'input-box'}}) }}
+                {{ form_row(form.title) }}
+                {{ form_row(form.url) }}
+                {{ form_row(form.price) }}
+                {{ form_row(form.description) }}
+
+                <!-- Upload d’image -->
+                <h3>Item image</h3>
+                {{ form_row(form.imageFile) }}
+
+                <button class="btn">Confirm</button>
+                {{ form_end(form) }}
+            </section>
+        </div>
+    </main>
+{% endblock %}
