@@ -97,4 +97,73 @@ h1 a {
     justify-content: center;
     align-items: center;
 }
+/* Add these styles to your existing CSS file */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    height: 100%;
+}
+
+.item-section {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.article-box, .upload-box {
+    border: 2px solid #99CC33;
+    padding: 20px;
+    background: white;
+    width: 200px;
+    text-align: center;
+    position: relative;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+.form-control {
+    padding: 8px;
+    border: 1px solid #99CC33;
+    border-radius: 5px;
+    outline: none;
+    width: 100%;
+}
+
+.submit-button {
+    padding: 10px;
+    background-color: #00B8DE;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}
+
+.submit-button:hover {
+    background-color: #0099B8;
+}
 

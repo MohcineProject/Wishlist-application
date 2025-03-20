@@ -39,7 +39,7 @@ class Item
     #[ORM\Column]
     private ?float $price = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'item', cascade: ['persist', 'remove'])]
     private ?PurchaseProof $purchaseProof = null;
 
     public function getId(): ?int
@@ -119,6 +119,10 @@ class Item
 
     public function setPurchaseProof(?PurchaseProof $purchaseProof): static
     {
+        // Ensure the relationship is bidirectional
+        if ($purchaseProof !== null && $purchaseProof->getItem() !== $this) {
+            $purchaseProof->setItem($this);
+        }
         $this->purchaseProof = $purchaseProof;
         return $this;
     }
