@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Purchase Proof{% endblock %}
+
+{% block body %}
+<header>
+    <div class="user-icon"></div>
+    <h1><a href="#">Purchase proof</a></h1>
+    <input type="text" placeholder="Search…" class="search-bar">
+    <div class="menu-icon"></div>
+</header>
+
+<main>
+    <div class="container">
+        <h2>Add Purchase Proof for {{ item.title }}</h2>
+        <section class="item-section">
+            <div class="article-box">
+                <p class="label">{{ item.title }}</p>
+                <div class="image-box">
+                    <img src="{{ asset('uploads/' ~ item.image) }}" alt="Item photo">
+                </div>
+            </div>
+
+            <div class="upload-box">
+                {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'class': 'upload-form'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.congratsText) }}
+                    {{ form_widget(form.congratsText, {'attr': {'class': 'form-control', 'placeholder': 'Write a message…'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.imagePath) }}
+                    {{ form_widget(form.imagePath, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <button type="submit" class="submit-button">Submit</button>
+                {{ form_end(form) }}
+            </div>
+        </section>
+    </div>
+</main>
+{% endblock %}

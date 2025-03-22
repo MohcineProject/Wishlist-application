@@ -19,6 +19,13 @@ class PurchaseProof
     #[ORM\Column(length: 255)]
     private ?string $imagePath = null;
 
+    #[ORM\OneToOne(inversedBy: "purchaseProof", cascade: ["persist", "remove"])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Item $item = null;
+
+    #[ORM\Column]
+    private ?int $item_id = null; // Explicit item_id column
+
     public function getId(): ?int
     {
         return $this->id;
@@ -32,7 +39,6 @@ class PurchaseProof
     public function setCongratsText(string $congratsText): static
     {
         $this->congratsText = $congratsText;
-
         return $this;
     }
 
@@ -44,7 +50,29 @@ class PurchaseProof
     public function setImagePath(string $imagePath): static
     {
         $this->imagePath = $imagePath;
+        return $this;
+    }
 
+    public function getItem(): ?Item
+    {
+        return $this->item;
+    }
+
+    public function setItem(Item $item): static
+    {
+        $this->item = $item;
+        $this->item_id = $item->getId(); // Keep item_id in sync
+        return $this;
+    }
+
+    public function getItemId(): ?int
+    {
+        return $this->item_id;
+    }
+
+    public function setItemId(int $item_id): static
+    {
+        $this->item_id = $item_id;
         return $this;
     }
 }

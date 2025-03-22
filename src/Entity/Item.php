@@ -4,8 +4,12 @@ namespace App\Entity;
 
 use App\Repository\ItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ItemRepository::class)]
+#[Vich\Uploadable]
 class Item
 {
     #[ORM\Id]
@@ -22,13 +26,20 @@ class Item
     #[ORM\Column(length: 255)]
     private ?string $url = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    #[Vich\UploadableField(mapping: 'item_images', fileNameProperty: 'image')]
+    #[Assert\Image(
+        mimeTypes: ["image/jpeg", "image/png"],
+        maxSize: "5M"
+    )]
+    private ?File $imageFile = null;
 
     #[ORM\Column]
     private ?float $price = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'item', cascade: ['persist', 'remove'])]
     private ?PurchaseProof $purchaseProof = null;
 
     public function getId(): ?int
@@ -44,7 +55,6 @@ class Item
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -56,7 +66,6 @@ class Item
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -68,7 +77,6 @@ class Item
     public function setUrl(string $url): static
     {
         $this->url = $url;
-
         return $this;
     }
 
@@ -77,11 +85,20 @@ class Item
         return $this->image;
     }
 
-    public function setImage(string $image): static
+    public function setImage(?string $image): self
     {
         $this->image = $image;
-
         return $this;
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageFile(?File $imageFile): void
+    {
+        $this->imageFile = $imageFile;
     }
 
     public function getPrice(): ?float
@@ -92,7 +109,6 @@ class Item
     public function setPrice(float $price): static
     {
         $this->price = $price;
-
         return $this;
     }
 
@@ -103,8 +119,11 @@ class Item
 
     public function setPurchaseProof(?PurchaseProof $purchaseProof): static
     {
+        // Ensure the relationship is bidirectional
+        if ($purchaseProof !== null && $purchaseProof->getItem() !== $this) {
+            $purchaseProof->setItem($this);
+        }
         $this->purchaseProof = $purchaseProof;
-
         return $this;
     }
 }

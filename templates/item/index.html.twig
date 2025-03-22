@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Item index{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="user-icon"></div>
+        <h1><a href="#">Item Management</a></h1>
+        <input type="text" placeholder="Search…" class="search-bar">
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="form-section">
+                <h1>Item index</h1>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Url</th>
+                        <th>Image</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.title }}</td>
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.url }}</td>
+                            <td>{{ item.image }}</td>
+                            <td>{{ item.price }}</td>
+                            <td>
+                                <a href="{{ path('app_item_show', {'id': item.id}) }}">Show</a>
+                                <a href="{{ path('app_item_edit', {'id': item.id}) }}">Edit</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7">No records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <a href="{{ path('app_item_new') }}" class="btn">Create new</a>
+            </section>
+        </div>
+    </main>
+
+
+{% endblock %}

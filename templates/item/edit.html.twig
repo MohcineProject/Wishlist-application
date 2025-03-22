@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ item is defined ? 'Edit Item' : 'New Item' }}{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="user-icon"></div>
+        <h1><a href="{{ path('app_item_index') }}">Item title</a></h1>
+        <input type="text" placeholder="Search…" class="search-bar">
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="form-section">
+                {{ form_start(form, {'attr': {'class': 'input-box'}}) }}
+
+                {{ form_row(form.title) }}
+                {{ form_row(form.url) }}
+                {{ form_row(form.price) }}
+                {{ form_row(form.description) }}
+
+                <!-- ✅ Affichage unique de l'image actuelle -->
+                {% if item is defined and item.image %}
+                    <h3>Current Image</h3>
+                    <div class="image-container">
+                        <img src="{{ asset('uploads/images/' ~ item.image) }}"
+                             alt="Item Image"
+                             style="max-width: 200px; border-radius: 5px; display: block; margin-bottom: 10px;">
+                    </div>
+                {% endif %}
+
+                <!-- ✅ Champ d'upload sans affichage d'image -->
+                <h3>Upload a new image</h3>
+                <label for="image-upload" class="upload-label">Choose a file</label>
+                {{ form_widget(form.imageFile, {'attr': {'class': 'file-input', 'id': 'image-upload'}}) }}
+
+                <button class="btn">{{ item is defined ? 'Update' : 'Confirm' }}</button>
+
+                {# ✅ Empêche Symfony d'afficher les champs restants automatiquement #}
+                {{ form_end(form) }}
+            </section>
+        </div>
+    </main>
+{% endblock %}
