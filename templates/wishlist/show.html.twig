@@ -3,7 +3,17 @@
 {% block title %}Wishlist{% endblock %}
 
 {% block body %}
-    <h1>Wishlist</h1>
+
+    <header>
+        <div class="user-icon"></div>
+        <div style="display:flex;justify-content:center;align-items:center;"> 
+        
+        <h1>My wishlists</h1>
+        
+        </div>
+        <input type="text" placeholder="Search…" class="search-bar">
+    </header>
+
 
     <table class="table">
         <tbody>
@@ -26,9 +36,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_whishlist_index') }}">back to list</a>
+    <a href="{{ path('app_wishlist_index') }}">back to list</a>
 
-    <a href="{{ path('app_whishlist_edit', {'id': wishlist.id}) }}">edit</a>
+    <a href="{{ path('app_wishlist_edit', {'id': wishlist.id}) }}">edit</a>
 
-    {{ include('whishlist/_delete_form.html.twig') }}
+    {{ include('wishlist/_delete_form.html.twig') }}
 {% endblock %}
