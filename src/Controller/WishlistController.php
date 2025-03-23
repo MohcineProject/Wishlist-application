@@ -61,7 +61,12 @@ final class WishlistController extends AbstractController
     #[Route('/{id}/edit', name: 'app_wishlist_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Wishlist $wishlist, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(WishlistType::class, $wishlist);
+        $wishlist->setName($request->get('name'));
+        $wishlist->setDeadline($request->get('deadline')) ; 
+        $entityManager->persist($wishlist);
+        $entityManager->flush();
+        return new Response('wishlist was modified successfully ', Response::HTTP_ACCEPTED) ;
+/*         $form = $this->createForm(WishlistType::class, $wishlist);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -73,7 +78,7 @@ final class WishlistController extends AbstractController
         return $this->render('wishlist/edit.html.twig', [
             'wishlist' => $wishlist,
             'form' => $form,
-        ]);
+        ]); */
     }
 
     #[Route('/{id}', name: 'app_wishlist_delete', methods: ['POST'])]
@@ -86,4 +91,6 @@ final class WishlistController extends AbstractController
 
         return $this->redirectToRoute('app_wishlist_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
 }

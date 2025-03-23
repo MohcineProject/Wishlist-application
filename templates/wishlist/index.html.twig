@@ -1,39 +1,49 @@
+
 {% extends 'base.html.twig' %}
 
-{% block title %}Wishlist index{% endblock %}
+{% block title %} My Wishlists {% endblock %}
 
-{% block body %}
-    <h1>Wishlist index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Deadline</th>
-                <th>IsDisabled</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for wishlist in wishlists %}
-            <tr>
-                <td>{{ wishlist.id }}</td>
-                <td>{{ wishlist.name }}</td>
-                <td>{{ wishlist.deadline ? wishlist.deadline|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ wishlist.isDisabled ? 'Yes' : 'No' }}</td>
-                <td>
-                    <a href="{{ path('app_wishlist_show', {'id': wishlist.id}) }}">show</a>
-                    <a href="{{ path('app_wishlist_edit', {'id': wishlist.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_wishlist_new') }}">Create new</a>
-{% endblock %}
+{% block body  %} 
+ <header>
+        <div class="user-icon"></div>
+        <h1>My Wishlists</h1>
+        <input type="text" class="search-bar" placeholder="Search...">
+    </header>
+    
+    <div class="navbar">
+        <button class="add-wishlist-btn">Add wishlist</button>
+    </div>
+    
+    <div class="container">
+        <div class="wishlist">
+            <h2>wish list 1 title</h2>
+            <div class="wishlist-items">
+                <div class="wishlist-item">📷</div>
+                <div class="wishlist-item">📷</div>
+                <div class="wishlist-item">📷</div>
+            </div>
+            <p class="wishlist-footer">Authors: name1, name2</p>
+            <div class="wishlist-actions">
+                <button title="Share wishlist">↗</button>
+                <button title="Edit title">✏</button>
+                <button title="Delete wishlist">🗑</button>
+            </div>
+        </div>
+        
+        <div class="wishlist">
+            <h2>wish list 2 title</h2>
+            <div class="wishlist-items">
+                <div class="wishlist-item">📷</div>
+                <div class="wishlist-item">📷</div>
+                <div class="wishlist-item">📷</div>
+            </div>
+            <p class="wishlist-footer">Authors: name1</p>
+            <div class="wishlist-actions">
+                <button title="Share wishlist">↗</button>
+                <button title="Edit title">✏</button>
+                <button title="Delete wishlist">🗑</button>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
