@@ -42,6 +42,10 @@ class Item
     #[ORM\OneToOne(mappedBy: 'item', cascade: ['persist', 'remove'])]
     private ?PurchaseProof $purchaseProof = null;
 
+    #[ORM\ManyToOne(inversedBy: 'items')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Wishlist $wishlist = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -124,6 +128,18 @@ class Item
             $purchaseProof->setItem($this);
         }
         $this->purchaseProof = $purchaseProof;
+        return $this;
+    }
+
+    public function getWishlist(): ?Wishlist
+    {
+        return $this->wishlist;
+    }
+
+    public function setWishlist(?Wishlist $wishlist): static
+    {
+        $this->wishlist = $wishlist;
+
         return $this;
     }
 }

@@ -15,7 +15,7 @@ class WishlistRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Wishlist::class);
     }
-
+    
     //    /**
     //     * @return Wishlist[] Returns an array of Wishlist objects
     //     */

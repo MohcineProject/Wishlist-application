@@ -26,7 +26,15 @@ final class WishlistController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $wishlist = new Wishlist();
-        $form = $this->createForm(WishlistType::class, $wishlist);
+        $name = $request->get('name');
+        $wishlist->setName($name); 
+        $deadline = $request->get('deadline') ; 
+        $wishlist->setDeadline($deadline);
+        $entityManager->persist($wishlist);
+        $entityManager->flush();
+        
+        return new Response('wishlist created successfully', Response::HTTP_CREATED) ; 
+/*         $form = $this->createForm(WishlistType::class, $wishlist);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -39,7 +47,7 @@ final class WishlistController extends AbstractController
         return $this->render('wishlist/new.html.twig', [
             'wishlist' => $wishlist,
             'form' => $form,
-        ]);
+        ]); */
     }
 
     #[Route('/{id}', name: 'app_wishlist_show', methods: ['GET'])]
