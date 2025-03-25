@@ -16,12 +16,13 @@
     </div>
     
     <div class="container">
+        {% for wishlist in Wishlists %}
         <div class="wishlist">
-            <h2>wish list 1 title</h2>
+            <h2>{{ wishlist.title }}</h2>
             <div class="wishlist-items">
-                <div class="wishlist-item">📷</div>
-                <div class="wishlist-item">📷</div>
-                <div class="wishlist-item">📷</div>
+            {% for item in wishlist.items %}
+            <div class="wishlist-item">📷</div>
+            {% endfor %}
             </div>
             <p class="wishlist-footer">Authors: name1, name2</p>
             <div class="wishlist-actions">
@@ -30,20 +31,6 @@
                 <button title="Delete wishlist">🗑</button>
             </div>
         </div>
-        
-        <div class="wishlist">
-            <h2>wish list 2 title</h2>
-            <div class="wishlist-items">
-                <div class="wishlist-item">📷</div>
-                <div class="wishlist-item">📷</div>
-                <div class="wishlist-item">📷</div>
-            </div>
-            <p class="wishlist-footer">Authors: name1</p>
-            <div class="wishlist-actions">
-                <button title="Share wishlist">↗</button>
-                <button title="Edit title">✏</button>
-                <button title="Delete wishlist">🗑</button>
-            </div>
-        </div>
+        {% end for %}
     </div>
     {% endblock %}
