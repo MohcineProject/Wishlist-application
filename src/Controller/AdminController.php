@@ -5,6 +5,10 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Doctrine\ORM\EntityManagerInterface;
+
+use App\Entity\Item;
+use App\Entity\Wishlist;
 
 final class AdminController extends AbstractController
 {
@@ -19,9 +23,17 @@ final class AdminController extends AbstractController
     #[Route('/admin/dashboard', name: 'admin_dashboard')]
     public function dashboard(EntityManagerInterface $entityManager): Response
     {
-        $topItems = $entityManager->getRepository(WishlistItem::class)->findTopExpensiveItems();
+     $topItems = $entityManager->getRepository(Item::class)->findTopExpensiveItems();
         $topWishlists = $entityManager->getRepository(Wishlist::class)->findTopWishlistsByValue();
 
+
+        if (!$topItems) {
+            $topItems = []; 
+        }
+        
+        if (!$topWishlists) {
+            $topWishlists = []; 
+        }
         return $this->render('admin/dashboard.html.twig', [
             'topItems' => $topItems,
             'topWishlists' => $topWishlists,

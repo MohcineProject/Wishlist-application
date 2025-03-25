@@ -24,9 +24,9 @@ security:
             remember_me:
                 secret: '%kernel.secret%'
 
-    access_control:
-        - { path: ^/admin, allow_if: "user and user.isAdmin == true" }
-        - { path: ^/locked, allow_if: "user and user.isLocked == true" }
+    # access_control:
+    #     - { path: ^/admin, allow_if: "user and user.isAdmin == true" }
+    #     - { path: ^/locked, allow_if: "user and user.isLocked == true" }
 
 when@test:
     security:

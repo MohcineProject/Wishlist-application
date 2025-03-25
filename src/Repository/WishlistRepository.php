@@ -60,7 +60,7 @@ class WishlistRepository extends ServiceEntityRepository
     public function findTopWishlistsByValue(): array
     {   
         return $this->createQueryBuilder('u')
-            ->join('u.wishlists', 'w')
+            ->join('u.wishlist', 'w')
             ->join('w.items', 'i')
             ->where('i.isPurchased = true')
             ->groupBy('w.id')
