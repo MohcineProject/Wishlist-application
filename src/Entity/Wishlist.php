@@ -125,7 +125,7 @@ class Wishlist
 
     public function getItemById(int $id){
         $itemsArray = (($this->items->toArray()))  ; 
-        for ($i = 0; $i < count($itemsArray); $i++) {
+        for ($i = 0; $i < sizeof($itemsArray); $i++) {
             $item = $itemsArray[$i];
             if ($item->getId() == $id ) {
                 return $item;
