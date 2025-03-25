@@ -1,4 +1,3 @@
-{# templates/wishlist/new.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Create New Wishlist{% endblock %}
@@ -6,16 +5,30 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #00B8DE, #99CC33) fixed;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
         .wishlist-form {
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            border: 2px solid #99CC33;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
         }
         .form-group {
             margin-bottom: 1.5rem;
+            text-align: left;
         }
         .form-label {
             display: block;
@@ -25,7 +38,7 @@
         .form-control {
             width: 100%;
             padding: 0.5rem;
-            border: 1px solid #ced4da;
+            border: 2px solid #99CC33;
             border-radius: 4px;
             font-size: 1rem;
         }
@@ -44,22 +57,41 @@
             font-size: 1rem;
         }
         .btn-primary {
-            background-color: #007bff;
-            color: white;
-            border: none;
+            background-color: white;
+            color: #00B8DE;
+            border: 2px solid #00B8DE;
+            transition: 0.3s;
         }
         .btn-primary:hover {
-            background-color: #0069d9;
+            background-color: #99CC33;
+            color: white;
+            border-color: #99CC33;
+        }
+        .btn-secondary {
+            background-color: white;
+            color: #99CC33;
+            border: 2px solid #99CC33;
+            transition: 0.3s;
+        }
+        .btn-secondary:hover {
+            background-color: #00B8DE;
+            color: white;
+            border-color: #00B8DE;
         }
         .form-help {
             font-size: 0.8rem;
-            color: #6c757d;
+            color: #e0e0e0;
             margin-top: 0.25rem;
         }
         .error-message {
             color: #dc3545;
             font-size: 0.875rem;
             margin-top: 0.25rem;
+        }
+        @media (max-width: 768px) {
+            .wishlist-form {
+                width: 90%;
+            }
         }
     </style>
 {% endblock %}
@@ -92,7 +124,7 @@
 
             <div class="form-group mt-4">
                 <button type="submit" class="btn btn-primary">Create Wishlist</button>
-                <a href="{{ path('wishlist_index') }}" class="btn btn-secondary ml-2">Cancel</a>
+                <a href="{{ path('app_wishlist_index') }}" class="btn btn-secondary ml-2">Cancel</a>
             </div>
         {{ form_end(form) }}
     </div>

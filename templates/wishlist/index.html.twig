@@ -1,34 +1,124 @@
-
 {% extends 'base.html.twig' %}
 
 {% block title %} My Wishlists {% endblock %}
 
+{% block body %} 
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #00B8DE, #99CC33) fixed;
+        color: white;
+        text-align: center;
+        padding: 20px;
+    }
+    .container {
+        max-width: 800px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+    }
+    .search-bar {
+        padding: 8px;
+        border-radius: 8px;
+        border: 2px solid #99CC33;
+    }
+    .add-wishlist-btn {
+        background: white;
+        color: #00B8DE;
+        padding: 10px 15px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: 0.3s;
+        display: inline-block;
+        margin: 15px 0;
+    }
+    .add-wishlist-btn:hover {
+        background: #99CC33;
+        color: white;
+        transform: scale(1.1);
+    }
+    .wishlist {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px;
+        border-radius: 10px;
+        border: 2px solid #99CC33;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 600px;
+        margin: auto;
+    }
+    .wishlist h2 {
+        margin: 10px 0;
+    }
+    .wishlist-items {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .wishlist-item {
+        background: white;
+        color: #00B8DE;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 1.5em;
+    }
+    .wishlist-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 10px;
+    }
+    .wishlist-actions button {
+        background: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .wishlist-actions button:hover {
+        background: #99CC33;
+        color: white;
+    }
+    @media (max-width: 768px) {
+        .wishlist {
+            width: 90%;
+        }
+    }
+</style>
 
-{% block body  %} 
- <header>
-        <div class="user-icon"></div>
-        <h1>My Wishlists</h1>
-        <input type="text" class="search-bar" placeholder="Search...">
-    </header>
-    
-    <a href="{{ path('app_wishlist_new') }}" class="add-wishlist-btn">Add wishlist</a>  </div>
-    
-    <div class="container">
-        {% for wishlist in wishlists %}
-        <div class="wishlist">
-            <h2>{{ wishlist.name }}</h2>
-            <div class="wishlist-items">
-            {% for item in wishlist.items %}
-            <div class="wishlist-item">📷</div>
-            {% endfor %}
-            </div>
-            <p class="wishlist-footer">{{wishlist.deadline}}</p>
-            <div class="wishlist-actions">
-                <button title="Share wishlist">↗</button>
-                <button title="Edit title">✏</button>
-                <button title="Delete wishlist">🗑</button>
-            </div>
-        </div>
+<header>
+    <div class="user-icon"></div>
+    <h1>My Wishlists</h1>
+    <input type="text" class="search-bar" placeholder="Search...">
+</header>
+
+<a href="{{ path('app_wishlist_new') }}" class="add-wishlist-btn">Add wishlist</a>
+
+<div class="container">
+    {% for wishlist in wishlists %}
+    <div class="wishlist">
+        <h2>{{ wishlist.name }}</h2>
+        <div class="wishlist-items">
+        {% for item in wishlist.items %}
+        <div class="wishlist-item">📷</div>
         {% endfor %}
+        </div>
+        <div class="wishlist-actions">
+            <button title="Share wishlist">↗</button>
+            <button title="Edit title">✏</button>
+            <button title="Delete wishlist">🗑</button>
+        </div>
     </div>
-    {% endblock %}
+    {% endfor %}
+</div>
+{% endblock %}
