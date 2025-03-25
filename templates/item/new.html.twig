@@ -2,10 +2,84 @@
 
 {% block title %}New Item{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #00B8DE, #99CC33) fixed;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .search-bar {
+            padding: 5px;
+            border: 2px solid #99CC33;
+            border-radius: 5px;
+        }
+        .form-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            border: 2px solid #99CC33;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-align: left;
+        }
+        .input-box {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #99CC33;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .btn {
+            background-color: white;
+            color: #00B8DE;
+            border: 2px solid #00B8DE;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background-color: #99CC33;
+            color: white;
+            border-color: #99CC33;
+        }
+        @media (max-width: 768px) {
+            .form-section {
+                width: 90%;
+                margin: auto;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <header>
-        <div class="user-icon"></div>
-        <h1><a href="{{ path('app_item_index') }}">Item title</a></h1>
+        <h1><a href="{{ path('app_item_index') }}">New Item</a></h1>
         <input type="text" placeholder="Search…" class="search-bar">
     </header>
 
@@ -13,15 +87,14 @@
         <div class="container">
             <section class="form-section">
                 {{ form_start(form, {'attr': {'class': 'input-box'}}) }}
-                {{ form_row(form.title) }}
-                {{ form_row(form.url) }}
-                {{ form_row(form.price) }}
-                {{ form_row(form.description) }}
-
-                <!-- Upload d’image -->
-                <h3>Item image</h3>
-                {{ form_row(form.imageFile) }}
-
+                {{ form_row(form.title, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.url, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.price, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+                
+                <h3>Item Image</h3>
+                {{ form_row(form.imageFile, {'attr': {'class': 'form-control'}}) }}
+                
                 <button class="btn">Confirm</button>
                 {{ form_end(form) }}
             </section>
