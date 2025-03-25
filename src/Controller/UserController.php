@@ -10,6 +10,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\Request;
 
+use App\Form\UserType;
+
 final class UserController extends AbstractController
 {
     #[Route('/user', name: 'app_user')]
@@ -78,7 +80,8 @@ final class UserController extends AbstractController
             dump('Aucun token trouvé');
         }
 
-        if (!$user instanceof User) {
+        if ($user==null)
+         {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
 
