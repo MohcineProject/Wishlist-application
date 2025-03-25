@@ -8,6 +8,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\Request;
+
+use App\Form\UserType;
 
 final class UserController extends AbstractController
 {
@@ -63,5 +66,41 @@ final class UserController extends AbstractController
 
         $this->addFlash('success', 'Wishlist supprimée avec succès.');
         return $this->redirectToRoute('user_dashboard');
+    }
+
+    #[Route('/user/profile', name: 'user_profile')]
+    public function profile(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        // Récupérer l'utilisateur connecté
+        $token = $this->container->get('security.token_storage')->getToken();
+        if ($token) {
+            $user = $token->getUser();
+            dump($user);
+        } else {
+            dump('Aucun token trouvé');
+        }
+
+        if ($user==null)
+         {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
+        }
+
+        // Créer le formulaire pour modifier les informations de l'utilisateur
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Sauvegarder les modifications
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre profil a été mis à jour avec succès.');
+
+            return $this->redirectToRoute('user_profile');
+        }
+
+        return $this->render('user/profile.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }
