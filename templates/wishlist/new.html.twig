@@ -1,11 +1,99 @@
+{# templates/wishlist/new.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}New Wishlist{% endblock %}
+{% block title %}Create New Wishlist{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .wishlist-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        .form-check-input {
+            margin-right: 0.5rem;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0069d9;
+        }
+        .form-help {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Wishlist</h1>
+    <div class="container">
+        <h1 class="my-4">Create New Wishlist</h1>
+        
+        {{ form_start(form, {'attr': {'class': 'wishlist-form'}}) }}
+            <div class="form-group">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.name) }}
+                <small class="form-help">Give your wishlist a descriptive name</small>
+            </div>
 
-    {{ include('wishlist/_form.html.twig') }}
+            <div class="form-group">
+                {{ form_label(form.deadline) }}
+                {{ form_widget(form.deadline, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.deadline) }}
+                <small class="form-help">Optional - set a deadline for this wishlist</small>
+            </div>
 
-    <a href="{{ path('app_wishlist_index') }}">back to list</a>
+            <div class="form-check">
+                {{ form_widget(form.isDisabled, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_label(form.isDisabled) }}
+                {{ form_errors(form.isDisabled) }}
+            </div>
+            <small class="form-help">Disabled wishlists won't be visible to others</small>
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary">Create Wishlist</button>
+                <a href="{{ path('wishlist_index') }}" class="btn btn-secondary ml-2">Cancel</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
 {% endblock %}
