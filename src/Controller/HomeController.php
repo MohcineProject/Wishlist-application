@@ -11,15 +11,30 @@ class HomeController extends AbstractController
     #[Route('/', name: 'homepage')]
     public function index(): Response
     {
-        return $this->render('home/index.html.twig', [
-            'links' => [
-                'Register' => $this->generateUrl('register'),
-                'Login' => $this->generateUrl('login'),
-                'My Wishlists' => $this->generateUrl('app_wishlist_index'),
-                'Admin Dashboard' => $this->generateUrl('admin_dashboard'),
-                'Profile' => $this->generateUrl('user_profile'),
+        $user = $this->getUser(); // Récupère l'utilisateur connecté
 
-                        ],
+        $links = [
+        ];
+
+        // Ajoutez le lien "Admin Dashboard" uniquement si l'utilisateur est admin
+        if ($user && $user->isAdmin()) {
+            $links['Admin Dashboard'] = $this->generateUrl('admin_dashboard');
+        }
+
+        if (!$user) {
+            $links['Register'] = $this->generateUrl('register');
+            $links['Login'] = $this->generateUrl('login');
+        }
+
+        if ($user) {
+            $links['My Wishlists'] = $this->generateUrl('app_wishlist_index');
+            $links['Profile'] = $this->generateUrl('user_profile');
+            $links['Logout'] = $this->generateUrl('logout');
+
+        }
+
+        return $this->render('home/index.html.twig', [
+            'links' => $links,
         ]);
     }
 }

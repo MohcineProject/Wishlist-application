@@ -3,7 +3,61 @@
 {% block title %}Homepage{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #00B8DE, #99CC33) fixed;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .container {
+        width: 90%;
+        max-width: 600px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+    }
+    h1 {
+        font-size: 2em;
+        margin-bottom: 10px;
+    }
+    p {
+        font-size: 1.2em;
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+    li {
+        margin: 15px 0;
+    }
+    a {
+        text-decoration: none;
+        background: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        color: #00B8DE;
+        font-weight: bold;
+        transition: 0.3s;
+        display: inline-block;
+        margin: 10px;
+    }
+    a:hover {
+        background: #99CC33;
+        color: white;
+        transform: scale(1.1);
+    }
+</style>
+
+<div class="container">
     <h1>Welcome to the Wishlist Project</h1>
     <p>Here are the main links to navigate through the project:</p>
     <ul>
@@ -12,4 +66,18 @@
         {% endfor %}
     </ul>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const links = document.querySelectorAll("a");
+        links.forEach(link => {
+            link.addEventListener("mouseover", () => {
+                link.style.boxShadow = "0px 4px 15px rgba(255, 255, 255, 0.5)";
+            });
+            link.addEventListener("mouseout", () => {
+                link.style.boxShadow = "none";
+            });
+        });
+    });
+</script>
 {% endblock %}
