@@ -34,6 +34,7 @@ final class WishlistController extends AbstractController
         $form->handleRequest($request); // Handle the form submission
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $wishlist->setOwner($this->getUser());
             $entityManager->persist($wishlist); // Persist the new wishlist to the database
             $entityManager->flush(); // Save changes to the database
 
