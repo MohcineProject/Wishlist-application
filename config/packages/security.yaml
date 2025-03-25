@@ -25,8 +25,10 @@ security:
                 secret: '%kernel.secret%'
 
     access_control:
-        # Allow access to /login without being authenticated
+        # Allow access to /login and / without being authenticated
         - { path: ^/login, allow_if: "1" }
+        - { path: ^/register, allow_if: "1" }
+        - { path: ^/$, allow_if: "1" }
         
         # Allow users who are admins to access the /admin path
         - { path: ^/admin, allow_if: "user and user.isAdmin() == true" }
@@ -34,8 +36,7 @@ security:
         # Allow users who are not locked to access other pages
         - { path: ^/.*, allow_if: "user and user.isLocked() != true" }
         
-        # Allow all authenticated users to access other routes (outside /admin or /login)
-        - { path: ^/, allow_if: "user" }
+
 
 when@test:
     security:
