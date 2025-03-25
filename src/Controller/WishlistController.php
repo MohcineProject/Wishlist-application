@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class WishlistController extends AbstractController
 {
     #[Route(name: 'app_wishlist_index', methods: ['GET'])]
-    public function index(WishlistRepository $wishlistRepository): Response
+    public function getWishLists(WishlistRepository $wishlistRepository): Response
     {
         return $this->render('wishlist/index.html.twig', [
             'wishlists' => $wishlistRepository->findAll(),
@@ -23,11 +23,11 @@ final class WishlistController extends AbstractController
     }
 
     #[Route('/new', name: 'app_wishlist_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function createWishlist(Request $request, EntityManagerInterface $entityManager): Response
     {
         $wishlist = new Wishlist();
-        $name = $request->get('name');
-        $wishlist->setName($name); 
+        $name = $request->get(key: 'name');
+        $wishlist->setName(name: $name); 
         $deadline = $request->get('deadline') ; 
         $wishlist->setDeadline($deadline);
         $entityManager->persist($wishlist);

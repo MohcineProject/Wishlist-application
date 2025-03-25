@@ -26,7 +26,7 @@ security:
 
     access_control:
         - { path: ^/admin, allow_if: "user and user.isAdmin == true" }
-        - { path: ^/locked, allow_if: "user and user.isLocked == true" }
+        - { path: ^/*, allow_if: "user and user.isLocked != true" }
 
 when@test:
     security:
