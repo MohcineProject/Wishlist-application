@@ -2,15 +2,75 @@
 
 {% block title %}Mon Profil{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #00B8DE, #99CC33) fixed;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #99CC33;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            background-color: white;
+            color: #00B8DE;
+            border: 2px solid #00B8DE;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #99CC33;
+            color: white;
+            border-color: #99CC33;
+        }
+        .alert-success {
+            margin-top: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            border: 1px solid #99CC33;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 <div class="container mt-5">
     <h1>Mon Profil</h1>
 
-    {{ form_start(form) }}
-        {{ form_row(form.firstName) }}
-        {{ form_row(form.lastName) }}
-        {{ form_row(form.email) }}
-        {{ form_row(form.image) }}
+    {{ form_start(form, {'attr': {'class': 'profile-form'}}) }}
+        {{ form_row(form.firstName, {'attr': {'class': 'form-control'}}) }}
+        {{ form_row(form.lastName, {'attr': {'class': 'form-control'}}) }}
+        {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
+        {{ form_row(form.image, {'attr': {'class': 'form-control'}}) }}
         <button type="submit" class="btn btn-primary">Mettre à jour</button>
     {{ form_end(form) }}
 
