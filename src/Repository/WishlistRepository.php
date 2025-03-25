@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Wishlist;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -13,9 +14,49 @@ class WishlistRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Wishlist::class);
+        parent::__construct( $registry, Wishlist::class);
+    }
+
+
+    public function findByID($id) {
+        return $this->find($id); 
     }
     
+    public function addWishlist(Wishlist $wishlist) {
+            $this->getEntityManager()->persist($wishlist) ; 
+            $this->getEntityManager()->flush();
+    }
+
+    public function removeWishlist(int $wishlistId) {
+        $wishlist = $this->find($wishlistId);
+        if ($wishlist) {
+            $this->getEntityManager()->remove($wishlist);
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function editWishList(int $wishlistId, string $name, DateTime $deadline) {
+        $wishlist = $this->find($wishlistId);
+        if ($wishlist) {
+            $wishlist->setName($name);
+            $wishlist->setDeadline($deadline);
+            $this->getEntityManager()->flush();
+        }
+    }
+
+
+
+    public function mostExpensiveList() {
+        $wishlists  = $this->findAll() ; 
+
+        
+        foreach ($wishlists as $wishlist) {
+            $items = $wishlist->getItems();
+        }
+        
+
+    }
+
     //    /**
     //     * @return Wishlist[] Returns an array of Wishlist objects
     //     */
