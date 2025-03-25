@@ -2,6 +2,66 @@
 
 {% block title %}Item index{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #00B8DE, #99CC33) fixed;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 90%;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.9);
+            color: black;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #99CC33;
+        }
+        th {
+            background: #00B8DE;
+            color: white;
+        }
+        tr:hover {
+            background-color: rgba(153, 204, 51, 0.3);
+        }
+        .btn {
+            background-color: white;
+            color: #00B8DE;
+            border: 2px solid #00B8DE;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        .btn:hover {
+            background-color: #99CC33;
+            color: white;
+            border-color: #99CC33;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <header>
         <div class="user-icon"></div>
@@ -13,45 +73,41 @@
         <div class="container">
             <section class="form-section">
                 <h1>Item index</h1>
-
                 <table class="table">
                     <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Url</th>
-                        <th>Image</th>
-                        <th>Price</th>
-                        <th>Actions</th>
-                    </tr>
+                        <tr>
+                            <th>Id</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Url</th>
+                            <th>Image</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    {% for item in items %}
-                        <tr>
-                            <td>{{ item.id }}</td>
-                            <td>{{ item.title }}</td>
-                            <td>{{ item.description }}</td>
-                            <td>{{ item.url }}</td>
-                            <td>{{ item.image }}</td>
-                            <td>{{ item.price }}</td>
-                            <td>
-                                <a href="{{ path('app_item_show', {'id': item.id}) }}">Show</a>
-                                <a href="{{ path('app_item_edit', {'id': item.id}) }}">Edit</a>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="7">No records found</td>
-                        </tr>
-                    {% endfor %}
+                        {% for item in items %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.title }}</td>
+                                <td>{{ item.description }}</td>
+                                <td><a href="{{ item.url }}" target="_blank">Link</a></td>
+                                <td><img src="{{ asset('uploads/' ~ item.image) }}" alt="{{ item.title }}" width="50"></td>
+                                <td>{{ item.price }}</td>
+                                <td>
+                                    <a href="{{ path('app_item_show', {'id': item.id}) }}">Show</a>
+                                    <a href="{{ path('app_item_edit', {'id': item.id}) }}">Edit</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7">No records found</td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
-
                 <a href="{{ path('app_item_new') }}" class="btn">Create new</a>
             </section>
         </div>
     </main>
-
-
 {% endblock %}
