@@ -32,6 +32,21 @@ class Wishlist
     #[ORM\OneToMany(targetEntity: Item::class, mappedBy: 'wishlist', orphanRemoval: true)]
     private Collection $items;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'wishlists')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner = null;
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+        return $this;
+    }
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
