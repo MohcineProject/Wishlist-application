@@ -21,7 +21,7 @@ final class WishlistController extends AbstractController
 
 
         return $this->render('wishlist/index.html.twig', [
-            'wishlists' => $user->getWishlists()->toArray()
+            'wishlists' => $user->getWishlists()
         ]);
     }
 
@@ -40,7 +40,7 @@ final class WishlistController extends AbstractController
         }
 
         return $this->render('wishlist/new.html.twig', [
-            'wishlist' => $wishlist,
+            'wishlists' => $wishlist,
             'form' => $form,
         ]); 
         
