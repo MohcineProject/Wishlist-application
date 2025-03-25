@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Welcome to the Wishlist Project</h1>
+    <p>Here are the main links to navigate through the project:</p>
+    <ul>
+        {% for label, url in links %}
+            <li><a href="{{ url }}">{{ label }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
