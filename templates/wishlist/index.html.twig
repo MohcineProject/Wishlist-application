@@ -11,9 +11,7 @@
         <input type="text" class="search-bar" placeholder="Search...">
     </header>
     
-    <div class="navbar">
-        <button class="add-wishlist-btn">Add wishlist</button>
-    </div>
+    <a href="{{ path('app_wishlist_new') }}" class="add-wishlist-btn">Add wishlist</a>  </div>
     
     <div class="container">
         {% for wishlist in wishlists %}
