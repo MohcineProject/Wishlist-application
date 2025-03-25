@@ -17,7 +17,8 @@ class HomeController extends AbstractController
                 'Login' => $this->generateUrl('login'),
                 'My Wishlists' => $this->generateUrl('app_wishlist_index'),
                 'Admin Dashboard' => $this->generateUrl('admin_dashboard'),
-                'Profile' => $this->generateUrl('user_profile'),
+                'Profile' => $this->generateUrl(route: 'user_profile'),
+                'Logout' => $this->generateUrl(route: 'logout'),
 
                         ],
         ]);
