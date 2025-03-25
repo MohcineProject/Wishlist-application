@@ -1,36 +1,215 @@
-
 {% extends 'base.html.twig' %}
 
-{% block title %} My Wishlists {% endblock %}
+{% block title %}My Wishlists{% endblock %}
 
+{% block body %} 
+<header>
+    <div class="user-icon"></div>
+    <h1>My Wishlists</h1>
+    <input type="text" class="search-bar" placeholder="Search...">
+</header>
 
-{% block body  %} 
- <header>
-        <div class="user-icon"></div>
-        <h1>My Wishlists</h1>
-        <input type="text" class="search-bar" placeholder="Search...">
-    </header>
-    
-    <div class="navbar">
-        <button class="add-wishlist-btn">Add wishlist</button>
+<div class="navbar">
+    <button class="add-wishlist-btn" data-bs-toggle="modal" data-bs-target="#createWishlistModal">Add wishlist</button>
+</div>
+
+<!-- Create Wishlist Modal -->
+<div class="modal fade" id="createWishlistModal" tabindex="-1" aria-labelledby="createWishlistModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createWishlistModalLabel">Create New Wishlist</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createWishlistForm">
+                    <div class="mb-3">
+                        <label for="wishlistName" class="form-label">Name*</label>
+                        <input type="text" class="form-control" id="wishlistName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="wishlistDeadline" class="form-label">Deadline</label>
+                        <input type="datetime-local" class="form-control" id="wishlistDeadline">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="wishlistIsDisabled">
+                        <label class="form-check-label" for="wishlistIsDisabled">Disabled</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submitWishlist">Create</button>
+            </div>
+        </div>
     </div>
-    
-    <div class="container">
-        {% for wishlist in wishlists %}
-        <div class="wishlist">
-            <h2>{{ wishlist.title }}</h2>
-            <div class="wishlist-items">
+</div>
+
+<div class="container">
+    {% for wishlist in wishlists %}
+    <div class="wishlist {% if wishlist.isDisabled %}wishlist-disabled{% endif %}">
+        <div class="wishlist-header">
+            <h2>{{ wishlist.name }}</h2>
+            {% if wishlist.deadline %}
+                <span class="deadline-badge">
+                    Due: {{ wishlist.deadline|date('Y-m-d H:i') }}
+                    {% if wishlist.deadline|date('U') < 'now'|date('U') %}
+                        <span class="deadline-passed">(Passed)</span>
+                    {% endif %}
+                </span>
+            {% endif %}
+            {% if wishlist.isDisabled %}
+                <span class="disabled-badge">Disabled</span>
+            {% endif %}
+        </div>
+        <div class="wishlist-items">
             {% for item in wishlist.items %}
             <div class="wishlist-item">📷</div>
             {% endfor %}
-            </div>
-            <p class="wishlist-footer">Authors: name1, name2</p>
-            <div class="wishlist-actions">
-                <button title="Share wishlist">↗</button>
-                <button title="Edit title">✏</button>
-                <button title="Delete wishlist">🗑</button>
-            </div>
         </div>
-        {% endfor %}
+        <p class="wishlist-footer">Authors: name1, name2</p>
+        <div class="wishlist-actions">
+            <button title="Share wishlist">↗</button>
+            <button title="Edit wishlist">✏</button>
+            <button title="Delete wishlist">🗑</button>
+        </div>
     </div>
-    {% endblock %}
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('submitWishlist').addEventListener('click', function() {
+        const name = document.getElementById('wishlistName').value;
+        const deadline = document.getElementById('wishlistDeadline').value;
+        const isDisabled = document.getElementById('wishlistIsDisabled').checked;
+        
+        if (!name) {
+            alert('Please enter a name for your wishlist');
+            return;
+        }
+        
+        fetch('/wishlists/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                name: name,
+                deadline: deadline,
+                isDisabled: isDisabled
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                bootstrap.Modal.getInstance(document.getElementById('createWishlistModal')).hide();
+                window.location.reload();
+            } else {
+                alert('Error creating wishlist: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while creating the wishlist');
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .wishlist {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        position: relative;
+    }
+    
+    .wishlist-disabled {
+        opacity: 0.7;
+        background-color: #f8f9fa;
+    }
+    
+    .wishlist-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .deadline-badge {
+        background: #e9ecef;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+    
+    .deadline-passed {
+        color: #dc3545;
+        font-weight: bold;
+    }
+    
+    .disabled-badge {
+        background: #6c757d;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+    
+    .wishlist-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 15px 0;
+    }
+    
+    .wishlist-item {
+        width: 60px;
+        height: 60px;
+        background: #f5f5f5;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+    
+    .wishlist-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+    
+    .wishlist-actions button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+    }
+    
+    .add-wishlist-btn {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .add-wishlist-btn:hover {
+        background-color: #45a049;
+    }
+</style>
+{% endblock %}
