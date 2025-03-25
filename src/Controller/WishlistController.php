@@ -17,8 +17,11 @@ final class WishlistController extends AbstractController
     #[Route(name: 'app_wishlist_index', methods: ['GET'])]
     public function getWishLists(WishlistRepository $wishlistRepository): Response
     {
+        $user = $this->getUser() ; 
+
+
         return $this->render('wishlist/index.html.twig', [
-            'wishlists' => $wishlistRepository->findAll(),
+            'wishlists' => $user->getWishlists()->toArray()
         ]);
     }
 
@@ -26,15 +29,7 @@ final class WishlistController extends AbstractController
     public function createWishlist(Request $request, EntityManagerInterface $entityManager): Response
     {
         $wishlist = new Wishlist();
-        $name = $request->get(key: 'name');
-        $wishlist->setName(name: $name); 
-        $deadline = $request->get('deadline') ; 
-        $wishlist->setDeadline($deadline);
-        $entityManager->persist($wishlist);
-        $entityManager->flush();
-        
-        return new Response('wishlist created successfully', Response::HTTP_CREATED) ; 
-/*         $form = $this->createForm(WishlistType::class, $wishlist);
+        $form = $this->createForm(WishlistType::class, $wishlist);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -47,7 +42,9 @@ final class WishlistController extends AbstractController
         return $this->render('wishlist/new.html.twig', [
             'wishlist' => $wishlist,
             'form' => $form,
-        ]); */
+        ]); 
+        
+
     }
 
     #[Route('/{id}', name: 'app_wishlist_show', methods: ['GET'])]
@@ -94,3 +91,15 @@ final class WishlistController extends AbstractController
 
 
 }
+
+
+/* 
+        $wishlist = new Wishlist();
+        $name = $request->get(key: 'name');
+        $wishlist->setName(name: $name); 
+        $deadline = $request->get('deadline') ; 
+        $wishlist->setDeadline($deadline);
+        $this->getUser()->addToAuthorWhishlists($wishlist);
+        $entityManager->persist($wishlist);
+        $entityManager->persist($this->getUser()) ;
+        $entityManager->flush(); */
