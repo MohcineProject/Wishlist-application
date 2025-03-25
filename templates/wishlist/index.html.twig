@@ -16,7 +16,7 @@
     </div>
     
     <div class="container">
-        {% for wishlist in Wishlists %}
+        {% for wishlist in wishlists %}
         <div class="wishlist">
             <h2>{{ wishlist.title }}</h2>
             <div class="wishlist-items">
@@ -31,6 +31,6 @@
                 <button title="Delete wishlist">🗑</button>
             </div>
         </div>
-        {% end for %}
+        {% endfor %}
     </div>
     {% endblock %}
