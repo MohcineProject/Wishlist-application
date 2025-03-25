@@ -16,6 +16,18 @@ class WishlistRepository extends ServiceEntityRepository
         parent::__construct($registry, Wishlist::class);
     }
     
+    public function findTopWishlistsByValue(): array
+    {   
+        return $this->createQueryBuilder('u')
+            ->join('u.wishlists', 'w')
+            ->join('w.items', 'i')
+            ->where('i.isPurchased = true')
+            ->groupBy('w.id')
+            ->orderBy('SUM(i.price)', 'DESC')
+            ->setMaxResults(3)
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
     //     * @return Wishlist[] Returns an array of Wishlist objects
     //     */
