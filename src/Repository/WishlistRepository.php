@@ -47,7 +47,7 @@ class WishlistRepository extends ServiceEntityRepository
 
 
 
-    public function mostExpensiveList() {
+    public function mostExpensiveLists() {
         $wishlists  = $this->findAll() ; 
         $rankings = array();
         foreach ($wishlists as $wishlist) {
