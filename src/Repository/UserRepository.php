@@ -32,6 +32,16 @@ public function findLockedUsers(): array
         ->getQuery()
         ->getResult();
 }
+
+public function findByEmail(string $email): ?User
+{
+    return $this->createQueryBuilder('u')
+        ->where('u.email = :email')
+        ->setParameter('email', $email)
+        ->getQuery()
+        ->getOneOrNullResult();
+}
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

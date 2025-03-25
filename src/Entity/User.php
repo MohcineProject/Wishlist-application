@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface
@@ -52,6 +54,20 @@ class User implements UserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Wishlist::class)]
+    private Collection $wishlists;
+
+    #[ORM\OneToMany(mappedBy: 'invitedUser', targetEntity: Item::class)]
+    private Collection $invitations;
+
+    public function __construct()
+    {
+        $this->wishlists = new ArrayCollection();
+        $this->invitations = new ArrayCollection();
+        $this->roles = ['ROLE_USER'];
+        $this->isLocked = false;
+    }
 
     public function getId(): ?int
     {
@@ -142,11 +158,23 @@ class User implements UserInterface
         return $this;
     }
 
-    public function __construct()
+    public function getWishlists(): Collection
     {
-        $this->wishlists = new ArrayCollection();
-        $this->purchasedItems = new ArrayCollection();
-        $this->roles = ['ROLE_USER'];
-        $this->isLocked = false;
+        return $this->wishlists;
     }
+
+    // public function getInvitations(): Collection
+    // {
+    //     return $this->invitations;
+    // }
+
+    // public function addInvitation(Item $invitation): static
+    // {
+    //     if (!$this->invitations->contains($invitation)) {
+    //         $this->invitations[] = $invitation;
+    //         $invitation->setInvitedUser($this);
+    //     }
+
+    // }
+
 }

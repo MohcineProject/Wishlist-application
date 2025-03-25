@@ -16,6 +16,15 @@ class ItemRepository extends ServiceEntityRepository
         parent::__construct($registry, Item::class);
     }
 
+
+    public function findTopExpensiveItems(): array
+    {
+        return $this->createQueryBuilder('i')  // Alias "i" pour Item
+            ->orderBy('i.price', 'DESC')       // Trier par prix décroissant
+            ->setMaxResults(3)                 // Limiter à 3 résultats
+            ->getQuery()
+            ->getResult();                     // Exécuter la requête
+    }
     //    /**
     //     * @return Item[] Returns an array of Item objects
     //     */

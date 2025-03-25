@@ -2,9 +2,16 @@
 
 namespace App\Controller;
 
+use App\Repository\UserRepository;
+use App\Repository\WishlistRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Doctrine\ORM\EntityManagerInterface;
+
+use App\Entity\Item;
+use App\Entity\Wishlist;
+use Twig\TokenParser\UseTokenParser;
 
 final class AdminController extends AbstractController
 {
@@ -17,14 +24,24 @@ final class AdminController extends AbstractController
     }
 
     #[Route('/admin/dashboard', name: 'admin_dashboard')]
-    public function dashboard(EntityManagerInterface $entityManager): Response
+    public function dashboard(EntityManagerInterface $entityManager, WishlistRepository $wishlistRepository, UserRepository $userRepository): Response
     {
-        $topItems = $entityManager->getRepository(WishlistItem::class)->findTopExpensiveItems();
-        $topWishlists = $entityManager->getRepository(Wishlist::class)->findTopWishlistsByValue();
+        $topItems = $wishlistRepository->mostExpensiveItems();
+        $topWishlists = $wishlistRepository->mostExpensiveLists();
+        $users = $userRepository->findAll(); // Get all users
 
+
+        if (!$topItems) {
+            $topItems = []; 
+        }
+        
+        if (!$topWishlists) {
+             $topWishlists = []; 
+        }
         return $this->render('admin/dashboard.html.twig', [
             'topItems' => $topItems,
             'topWishlists' => $topWishlists,
+            'users' => $users,
         ]);
     }
 
