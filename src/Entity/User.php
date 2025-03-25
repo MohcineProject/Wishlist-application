@@ -164,6 +164,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->wishlists;
     }
 
+    public function addToAuthorWhishlists(Wishlists $wishlist){
+        if (!$this->wishlists->contains($wishlist)) {
+            $this->wishlists[] = $wishlist;
+        }       
+    }
     // public function getInvitations(): Collection
     // {
     //     return $this->invitations;
