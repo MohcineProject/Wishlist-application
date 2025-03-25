@@ -42,21 +42,62 @@ class WishlistRepository extends ServiceEntityRepository
             $wishlist->setDeadline($deadline);
             $this->getEntityManager()->flush();
         }
+        return $wishlist;
     }
 
 
 
-    public function mostExpensiveList() {
+    public function mostExpensiveLists() {
         $wishlists  = $this->findAll() ; 
+        $rankings = array();
+        foreach ($wishlists as $wishlist) {
+            $total =  $wishlist->wishlistTotalPrice() ; 
+            
+            if (sizeof(($rankings)) < 3  ) {
+                $rankings[] = ['wishlist' => $wishlist, 'total' => $total];
+                usort($rankings, callback: function($a, $b) {return $a['total'] - $b['total'];});
+            } else {
+                for ($i = 0; $i < sizeof($rankings) ; $i++ ) {
+                    if ($rankings[i]['total'] < $total ) {
+                        $rankings[i] = ['wishlist' => $wishlist, 'total' => $total] ; 
+                    }
+                } 
 
-        
+            }
+            
+        }
+        $result = array() ; 
+        for ($i =  0 ; $i < sizeof($rankings) ; $i++ ) {
+            $result[] = $rankings[i]['wishlist'] ; 
+        }
+        return $result;
+    }
+
+
+    public function mostExpensiveItems() {
+        $wishlists = $this->findAll() ; 
+        $rankings = array();
         foreach ($wishlists as $wishlist) {
             $items = $wishlist->getItems();
-        }
+            foreach ($items as $item) {
+                if ($item->getPurchaseProof()) {
+                    if (sizeof(($rankings)) < 3  ) {
+                        $rankings[] = $item;
+                        usort( $rankings, function($a, $b) {return $a->getPrice() - $b->getPrice();});
+                    } else {
+                        for ($i = 0; $i < sizeof($rankings) ; $i++ ) {
+                            if ($rankings[i]->getPrice() < $item->getPrice() ) {
+                                $rankings[i] = $item ; 
+                            }
+                        } 
         
+                    }
+                }
+            }
 
+        }
+        return $rankings;
     }
-
     //    /**
     //     * @return Wishlist[] Returns an array of Wishlist objects
     //     */
