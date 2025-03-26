@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Item;
 use App\Form\ItemType;
 use App\Repository\ItemRepository;
+use App\Repository\WishlistRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,25 +23,44 @@ final class ItemController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_item_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+
+    #[Route('/item/new', name: 'app_item_new')]
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        WishlistRepository $wishlistRepository
+    ): Response {
         $item = new Item();
+    
+        // Récupérer l’ID de la wishlist depuis l’URL
+        $wishlistId = $request->query->get('wishlistId');
+        if ($wishlistId) {
+            $wishlist = $wishlistRepository->find($wishlistId);
+            if ($wishlist) {
+                $item->setWishlist($wishlist);
+            }
+        }
+    
         $form = $this->createForm(ItemType::class, $item);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($item);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_item_index');
+    
+            // ✅ Redirection vers la bonne wishlist
+            return $this->redirectToRoute('app_wishlist_show', [
+                'id' => $item->getWishlist()->getId()
+            ]);
         }
-
+    
         return $this->render('item/new.html.twig', [
-            'item' => $item,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
+    
+    
+    
 
     #[Route('/{id}', name: 'app_item_show', methods: ['GET'])]
     public function show(Item $item): Response
@@ -55,18 +75,21 @@ final class ItemController extends AbstractController
     {
         $form = $this->createForm(ItemType::class, $item);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_item_index', [], Response::HTTP_SEE_OTHER);
+    
+            return $this->redirectToRoute('app_wishlist_show', [
+                'id' => $item->getWishlist()->getId(),
+            ], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('item/edit.html.twig', [
             'item' => $item,
             'form' => $form,
         ]);
     }
+    
 
     #[Route('/{id}', name: 'app_item_delete', methods: ['POST'])]
     public function delete(Request $request, Item $item, EntityManagerInterface $entityManager): Response
