@@ -5,6 +5,8 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Entity\PurchaseProof;
 
 class HomeController extends AbstractController
 {
@@ -27,9 +29,14 @@ class HomeController extends AbstractController
         }
 
         if ($user) {
+            
             $links['My Wishlists'] = $this->generateUrl('app_wishlist_index');
             $links['Profile'] = $this->generateUrl('user_profile');
             $links['Logout'] = $this->generateUrl('logout');
+            dump($user->getId());
+            $links['See my purchase proofs'] = $this->generateUrl('user_purchase_proofs');
+        
+            
 
         }
 
