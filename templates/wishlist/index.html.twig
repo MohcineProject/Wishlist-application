@@ -1,34 +1,136 @@
-
 {% extends 'base.html.twig' %}
 
 {% block title %} My Wishlists {% endblock %}
 
-
 {% block body  %} 
- <header>
-        <div class="user-icon"></div>
-        <h1>My Wishlists</h1>
-        <input type="text" class="search-bar" placeholder="Search...">
-    </header>
-    
-    <a href="{{ path('app_wishlist_new') }}" class="add-wishlist-btn">Add wishlist</a>  </div>
-    
-    <div class="container">
-        {% for wishlist in wishlists %}
-        <div class="wishlist">
-            <h2>{{ wishlist.name }}</h2>
-            <div class="wishlist-items">
+
+
+<style> 
+.modal {
+    display: none; /* Hide by default */
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content {
+    text-align: center;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+</style>
+
+<header>
+    <div class="user-icon"></div>
+    <h1>My Wishlists</h1>
+    <input type="text" class="search-bar" placeholder="Search...">
+</header>
+
+<a href="{{ path('app_wishlist_new') }}" class="add-wishlist-btn">Add wishlist</a>
+
+<div class="container">
+    {% for wishlist in wishlists %}
+    <div class="wishlist">
+        <h2>{{ wishlist.name }}</h2>
+        <div class="wishlist-items">
             {% for item in wishlist.items %}
             <div class="wishlist-item">📷</div>
             {% endfor %}
-            </div>
-            <p class="wishlist-footer">{{wishlist.deadline}}</p>
-            <div class="wishlist-actions">
-                <button title="Share wishlist">↗</button>
-                <button title="Edit title">✏</button>
-                <button title="Delete wishlist">🗑</button>
-            </div>
         </div>
-        {% endfor %}
+        <p class="wishlist-footer">{{ wishlist.deadline | date('F j, Y') }}</p>
+        
+        <!-- Share Button -->
+        <button type="button" class="share-btn" data-wishlist-id="{{ wishlist.id }}">↗</button>
+
+        <button title="Edit title">✏</button>
+        <button title="Delete wishlist">🗑</button>
     </div>
-    {% endblock %}
+    {% endfor %}
+</div>
+
+<!-- Modal Popup -->
+<div id="share-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Share Wishlist</h3>
+        <button id="invite-co-worker">Invite a Co-Worker</button>
+        <button id="share-wishes">Share Your Wishes!</button>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const shareButtons = document.querySelectorAll(".share-btn");
+    const modal = document.getElementById("share-modal");
+    const closeBtn = document.querySelector(".close");
+    
+    let selectedWishlistId = null; // Store the selected wishlist ID
+
+    shareButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            selectedWishlistId = this.dataset.wishlistId;
+            modal.style.display = "block";
+        });
+    });
+
+    closeBtn.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
+    // Handle Invite a Co-Worker Click
+    document.getElementById("invite-co-worker").addEventListener("click", async function () {
+        try {
+            const response = await fetch("{{path('app_invitation_new')}}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ wishlist_id: selectedWishlistId })
+            });
+
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+
+            const responseData = await response.json();
+            navigator.clipboard.writeText(responseData.url).then(() => {
+                alert("URL was copied to clipboard successfully!");
+            }).catch(err => {
+                alert("Error copying URL to clipboard: " +  err);
+            });
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Failed to send invitation.");
+        }
+    });
+
+    // Handle Share Your Wishes Click
+    document.getElementById("share-wishes").addEventListener("click", function () {
+        alert("Sharing your wishes! (Implement your sharing logic here)");
+    });
+});
+
+
+</script>
+
+{% endblock %}

@@ -59,15 +59,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Wishlist::class)]
     private Collection $wishlists;
 
-    #[ORM\OneToMany(mappedBy: 'invitedUser', targetEntity: Item::class)]
+    /**
+     * @var Collection<int, Invitation>
+     */
+    #[ORM\ManyToMany(targetEntity: Invitation::class)]
     private Collection $invitations;
+
+
+
+
 
     public function __construct()
     {
         $this->wishlists = new ArrayCollection();
-        $this->invitations = new ArrayCollection();
         $this->roles = ['ROLE_USER'];
         $this->isLocked = false;
+        $this->invitations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -182,5 +189,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     //     }
 
     // }
+
+    /**
+     * @return Collection<int, Invitation>
+     */
+    public function getInvitations(): Collection
+    {
+        return $this->invitations;
+    }
+
+    public function addInvitation(Invitation $invitation): static
+    {
+        if (!$this->invitations->contains($invitation)) {
+            $this->invitations->add($invitation);
+        }
+
+        return $this;
+    }
+
+    public function removeInvitation(Invitation $invitation): static
+    {
+        $this->invitations->removeElement($invitation);
+
+        return $this;
+    }
+
 
 }
