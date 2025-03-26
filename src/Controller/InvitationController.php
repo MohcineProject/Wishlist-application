@@ -31,12 +31,19 @@ final class InvitationController extends AbstractController
         
         $user = $this->getUser() ; 
 
+        $data = json_decode($request->getContent(),true) ; 
+        $wishlist_id = $data["wishlist_id"] ?? null ; 
+
+        if (!$wishlist_id) {
+            return new JsonResponse(["error"=>"Missing wishlist_id"] , Response::HTTP_BAD_REQUEST) ; 
+        }
+
         if (!$user) {
             return $this->createAccessDeniedException('User is not connected');
         } 
 
         $invitation->setInviter($user);
-        $invitation->setWishlist($entityManager->find(Wishlist::class, $request->get(key: 'wishlist_id')));
+        $invitation->setWishlist($entityManager->find(Wishlist::class, $wishlist_id));
         $entityManager->persist($invitation);
         $entityManager->flush();
 
