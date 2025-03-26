@@ -10,7 +10,15 @@
         {{ form_row(registrationForm.firstName) }}
         {{ form_row(registrationForm.lastName) }}
         {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.password) }}
+        
+
+            {{ form_label(registrationForm.password) }}
+            {{ form_widget(registrationForm.password) }}
+            {% for error in registrationForm.password.vars.errors %}
+                <div class="text-danger">{{ error.message }}</div>
+            {% endfor %}
+        
+        
         {{ form_row(registrationForm.image) }}
         <button type="submit" class="btn btn-primary">S'inscrire</button>
     {{ form_end(registrationForm) }}

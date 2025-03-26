@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Repository\PurchaseProofRepository;
 
 use App\Form\UserType;
 
@@ -103,4 +104,27 @@ final class UserController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/user/purchase-proofs', name: 'user_purchase_proofs')]
+    public function listPurchaseProofs(PurchaseProofRepository $purchaseProofRepository): Response
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            throw $this->createAccessDeniedException('You must be logged in to access this page.');
+        }
+
+        $purchaseProofs = $purchaseProofRepository->createQueryBuilder('pp')
+            ->join('pp.item', 'i')
+            ->join('i.wishlist', 'w')
+            ->where('w.owner = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+
+        return $this->render('user/purchase_proofs.html.twig', [
+            'purchaseProofs' => $purchaseProofs,
+        ]);
+    }
+
+    
 }

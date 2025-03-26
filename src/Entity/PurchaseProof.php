@@ -19,12 +19,13 @@ class PurchaseProof
     #[ORM\Column(length: 255)]
     private ?string $imagePath = null;
 
-    #[ORM\OneToOne(inversedBy: "purchaseProof", cascade: ["persist", "remove"])]
+    #[ORM\OneToOne(inversedBy: 'purchaseProof', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Item $item = null;
 
-    #[ORM\Column]
-    private ?int $item_id = null; // Explicit item_id column
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'purchaseProofs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $buyer = null;
 
     public function getId(): ?int
     {

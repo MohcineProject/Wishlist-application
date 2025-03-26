@@ -40,8 +40,13 @@ class RegistrationFormType extends AbstractType
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe',
                 'constraints' => [
-                    new NotBlank(),
-                    new Length(['min' => 6]),
+                    new NotBlank([
+                        'message' => 'Le mot de passe ne peut pas être vide.',
+                    ]),
+                    new Length([
+                        'min' => 6,
+                        'minMessage' => 'Veuillez choisir un mot de passe contenant au moins {{ limit }} caractères.',
+                    ]),
                 ],
             ])
             ->add('image', FileType::class, [

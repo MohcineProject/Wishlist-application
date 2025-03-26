@@ -39,7 +39,7 @@ class Item
     #[ORM\Column]
     private ?float $price = null;
 
-    #[ORM\OneToOne(mappedBy: 'item', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'item', targetEntity: PurchaseProof::class, cascade: ['persist', 'remove'])]
     private ?PurchaseProof $purchaseProof = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]

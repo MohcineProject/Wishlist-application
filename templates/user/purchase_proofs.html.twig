@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Purchase Proofs{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="user-icon"></div>
+        <h1><a href="#">Purchase Proof Management</a></h1>
+        <input type="text" placeholder="Search…" class="search-bar">
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="form-section">
+                <h1>Purchase Proofs</h1>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Congrats Text</th>
+                        <th>Image Path</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for proof in purchaseProofs %}
+                        <tr>
+                            <td>{{ proof.id }}</td>
+                            <td>{{ proof.congratsText }}</td>
+                            <td>
+                                <img src="{{ asset(proof.imagePath) }}" alt="Proof Image" style="max-width: 100px;">
+                            </td>
+                            <td>
+                                <a href="{{ path('app_purchase_proof', { 'id': proof.id }) }}">View</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">No purchase proofs found.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </main>
+{% endblock %}

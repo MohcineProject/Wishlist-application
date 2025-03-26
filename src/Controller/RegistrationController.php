@@ -49,6 +49,9 @@ class RegistrationController extends AbstractController
             }
 
         }
+        else {
+            // Si le formulaire n'est pas valide, les erreurs seront disponibles dans la vue
+        }
 
        
 
