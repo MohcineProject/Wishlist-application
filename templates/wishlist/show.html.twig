@@ -5,16 +5,21 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        /* Global Styles */
         body {
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #00B8DE, #99CC33) fixed;
             color: white;
             padding: 20px;
+            margin: 0;
         }
         .container {
             max-width: 1200px;
             margin: auto;
+            padding: 0 10px;
         }
+
+        /* Header */
         .wishlist-header {
             display: flex;
             justify-content: space-between;
@@ -24,7 +29,7 @@
             background: rgba(255, 255, 255, 0.2);
             border-radius: 15px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             margin-bottom: 30px;
         }
         .wishlist-title {
@@ -35,6 +40,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-wrap: wrap;
         }
         .add-item-btn {
             background-color: white;
@@ -55,11 +61,14 @@
             padding: 8px;
             border: 2px solid #99CC33;
             border-radius: 8px;
+            min-width: 180px;
         }
         .sort-select {
             padding: 8px;
             border: 2px solid #99CC33;
             border-radius: 8px;
+            background-color: white;
+            color: #00B8DE;
         }
         .view-switcher {
             background: white;
@@ -76,15 +85,17 @@
             border-color: #99CC33;
         }
 
+        /* List & Grid Item Styles */
         .items-list, .items-grid {
             list-style: none;
             padding: 0;
+            margin: 20px 0;
         }
         .item, .grid-item {
             background: rgba(255, 255, 255, 0.2);
             border: 2px solid #99CC33;
             border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
             padding: 15px;
             color: #fff;
@@ -97,6 +108,7 @@
             object-fit: cover;
             border-radius: 10px;
             margin-right: 20px;
+            flex-shrink: 0;
         }
         .item-details, .grid-details {
             flex: 1;
@@ -105,6 +117,7 @@
             display: flex;
             gap: 10px;
             margin-top: 10px;
+            flex-wrap: wrap;
         }
         .action-btn {
             background-color: white;
@@ -120,6 +133,8 @@
             color: white;
             border-color: #99CC33;
         }
+
+        /* Grid Specific */
         .items-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -127,13 +142,14 @@
         }
         .grid-image-container {
             width: 100%;
-            padding-top: 100%;
+            padding-top: 100%; /* 1:1 Aspect Ratio */
             position: relative;
         }
         .grid-image {
             position: absolute;
             top: 0; left: 0;
-            width: 100%; height: 100%;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
         .empty-state {
@@ -142,11 +158,27 @@
             padding: 50px;
             opacity: 0.8;
         }
+
+        /* Responsive Adjustments */
         @media (max-width: 768px) {
             .wishlist-header {
                 flex-direction: column;
                 gap: 20px;
                 align-items: flex-start;
+            }
+            .item, .grid-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .item img {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            .item-actions, .grid-actions {
+                justify-content: center;
+            }
+            .search-bar, .sort-select {
+                width: 100%;
             }
         }
     </style>
@@ -168,10 +200,13 @@
                 <option value="name_asc" {% if sort_by == 'name_asc' %}selected{% endif %}>Name A-Z</option>
                 <option value="name_desc" {% if sort_by == 'name_desc' %}selected{% endif %}>Name Z-A</option>
             </select>
-            <button class="view-switcher" onclick="toggleViewMode()">{{ view_mode == 'grid' ? '≡' : '⏹' }}</button>
+            <button class="view-switcher" onclick="toggleViewMode()">
+                {{ view_mode == 'grid' ? '≡' : '⏹' }}
+            </button>
         </div>
     </div>
 
+    {# List View #}
     <ul class="items-list" id="listView" style="display: {{ view_mode != 'grid' ? 'block' : 'none' }};">
         {% for item in wishlist.items %}
             <li class="item">
@@ -197,6 +232,7 @@
         {% endfor %}
     </ul>
 
+    {# Grid View #}
     <ul class="items-grid" id="gridView" style="display: {{ view_mode == 'grid' ? 'grid' : 'none' }};">
         {% for item in wishlist.items %}
             <li class="grid-item">
@@ -223,4 +259,19 @@
         {% endfor %}
     </ul>
 </div>
+
+<script>
+    // Toggle between list and grid view
+    function toggleViewMode() {
+        var listView = document.getElementById('listView');
+        var gridView = document.getElementById('gridView');
+        if (listView.style.display === 'block') {
+            listView.style.display = 'none';
+            gridView.style.display = 'grid';
+        } else {
+            gridView.style.display = 'none';
+            listView.style.display = 'block';
+        }
+    }
+</script>
 {% endblock %}
