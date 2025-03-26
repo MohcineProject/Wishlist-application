@@ -47,12 +47,14 @@ h1 a {
     margin: 20px;
 }
 
+
 .info-text {
-    color: red;
+    color: #f4f4f4;
     font-size: 14px;
     max-width: 150px;
+    text-align: center; /* Center the text horizontally */
+    width: 100%; /* Ensure it can take the full width of the container for centering */
 }
-
 .form-section {
     background: white;
     padding: 20px;

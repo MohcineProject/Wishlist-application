@@ -3,6 +3,18 @@
 {% block title %}Wishlist Invitations{% endblock %}
 
 {% block body %}
+
+<style>
+
+.info-text {
+    color: #f4f4f4;
+    font-size: 14px;
+    max-width: 150px;
+    text-align: center; 
+    width: 100%; 
+}
+</style>
+
     <header>
         <div class="user-icon"></div>
         <h1><a href="#">Wishlist Invitations</a></h1>
@@ -39,9 +51,4 @@
         {% endif %}
     </div>
 
-    <div class="navbar">
-        <button class="add-wishlist-btn">
-            <a href="{{ path('app_invitation_new') }}" style="color: white; text-decoration: none;">Create new invitation</a>
-        </button>
-    </div>
 {% endblock %}

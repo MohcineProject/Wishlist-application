@@ -58,8 +58,8 @@
         <!-- Share Button -->
         <button type="button" class="share-btn" data-wishlist-id="{{ wishlist.id }}">↗</button>
 
-        <button title="Edit title">✏</button>
-        <button title="Delete wishlist">🗑</button>
+        <button title="Edit title"><a href="{{ path('app_wishlist_edit', { 'id': wishlist.id }) }}">✏</a></button>
+        <button title="Delete wishlist"> <a href="{{path('app_wishlist_delete', {'id':wishlist.id} ) }}">🗑</a>  </button>
     </div>
     {% endfor %}
 </div>

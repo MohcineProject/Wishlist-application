@@ -2,12 +2,119 @@
 
 {% block title %}Edit Wishlist{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #00B8DE, #99CC33) fixed;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .wishlist-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            border: 2px solid #99CC33;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid #99CC33;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        .form-check-input {
+            margin-right: 0.5rem;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            background-color: white;
+            color: #00B8DE;
+            border: 2px solid #00B8DE;
+            transition: 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #99CC33;
+            color: white;
+            border-color: #99CC33;
+        }
+        .btn-secondary {
+            background-color: white;
+            color: #99CC33;
+            border: 2px solid #99CC33;
+            transition: 0.3s;
+        }
+        .btn-secondary:hover {
+            background-color: #00B8DE;
+            color: white;
+            border-color: #00B8DE;
+        }
+        .form-help {
+            font-size: 0.8rem;
+            color: #e0e0e0;
+            margin-top: 0.25rem;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        @media (max-width: 768px) {
+            .wishlist-form {
+                width: 90%;
+            }
+        }
+        .delete-form {
+            display: inline-block;
+            margin-left: 10px;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <h1>Edit Wishlist</h1>
+    <div class="container">
+        <h1 class="my-4">Edit Wishlist</h1>
 
-    {{ include('wishlist/_form.html.twig', {'button_label': 'Update'}) }}
+        {{ include('wishlist/_form.html.twig', {
+            'button_label': 'Update',
+            'form': form,
+            'attr': {'class': 'wishlist-form'}
+        }) }}
 
-    <a href="{{ path('app_wishlist_index') }}">back to list</a>
-
-    {{ include('wishlist/_delete_form.html.twig') }}
+        <div class="form-group mt-4">
+            <a href="{{ path('app_wishlist_index') }}" class="btn btn-secondary">Back to list</a>
+            <div class="delete-form">
+                {{ include('wishlist/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
