@@ -39,10 +39,10 @@ class Item
     #[ORM\Column]
     private ?float $price = null;
 
-    #[ORM\OneToOne(mappedBy: 'item', targetEntity: PurchaseProof::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'item', targetEntity: PurchaseProof::class, cascade: ['remove'])]
     private ?PurchaseProof $purchaseProof = null;
 
-    #[ORM\ManyToOne(inversedBy: 'items')]
+    #[ORM\ManyToOne(inversedBy: 'items', cascade: ['remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Wishlist $wishlist = null;
 

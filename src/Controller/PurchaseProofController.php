@@ -23,8 +23,8 @@ class PurchaseProofController extends AbstractController
         }
 
         $purchaseProof = new PurchaseProof();
-        $purchaseProof->setItem($item);
-
+        $purchaseProof->setItem(item: $item);
+        
         $form = $this->createForm(PurchaseProofType::class, $purchaseProof);
         $form->handleRequest($request);
 

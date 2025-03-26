@@ -29,11 +29,13 @@ class Wishlist
     /**
      * @var Collection<int, Item>
      */
-    #[ORM\OneToMany(targetEntity: Item::class, mappedBy: 'wishlist', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Item::class, mappedBy: 'wishlist', orphanRemoval: true, cascade: ['remove'])]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+
     private Collection $items;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'wishlists')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'wishlists', cascade: ['remove'] )]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $owner = null;
 
     public function getOwner(): ?User
@@ -150,14 +152,15 @@ class Wishlist
     }
 
 
-    public function wishlistTotalPrice() {
-        $itemsArray = (($this->items->toArray())) ;
-        
-        $total =  0  ; 
+    public function wishlistTotalPrice(): float
+    {
+        $itemsArray = $this->items->toArray(); // Pas besoin des doubles parenthèses
+        $total = 0;
+    
         for ($i = 0; $i < count($itemsArray); $i++) {
-            $total += $itemsArray[i]->getPrice() ; 
+            $total += $itemsArray[$i]->getPrice(); // Utilisation correcte des crochets
         }
-
-        return $total ; 
+    
+        return $total;
     }
 }

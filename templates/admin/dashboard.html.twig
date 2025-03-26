@@ -39,7 +39,7 @@
                         {% for wishlist in topWishlists %}
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 {{ wishlist.name }}
-                                <span class="badge bg-success rounded-pill">{{ wishlist.totalValue }} €</span>
+                                <span class="badge bg-success rounded-pill">{{ wishlist.wishlistTotalPrice() }} €</span>
                             </li>
                         {% endfor %}
                         </ul>
@@ -72,7 +72,8 @@
                             {% for user in users %}
                                 <tr>
                                     <td>{{ user.id }}</td>
-                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.firstName }}</td>
+                                    <td>{{ user.lastName }}</td>
                                     <td>{{ user.email }}</td>
                                     <td>
                                         {% if user.isLocked %}

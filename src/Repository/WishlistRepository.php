@@ -58,8 +58,8 @@ class WishlistRepository extends ServiceEntityRepository
                 usort($rankings, callback: function($a, $b) {return $a['total'] - $b['total'];});
             } else {
                 for ($i = 0; $i < sizeof($rankings) ; $i++ ) {
-                    if ($rankings[i]['total'] < $total ) {
-                        $rankings[i] = ['wishlist' => $wishlist, 'total' => $total] ; 
+                    if ($rankings[$i]['total'] < $total ) {
+                        $rankings[$i] = ['wishlist' => $wishlist, 'total' => $total] ; 
                     }
                 } 
 
@@ -68,7 +68,7 @@ class WishlistRepository extends ServiceEntityRepository
         }
         $result = array() ; 
         for ($i =  0 ; $i < sizeof($rankings) ; $i++ ) {
-            $result[] = $rankings[i]['wishlist'] ; 
+            $result[] = $rankings[$i]['wishlist'] ; 
         }
         return $result;
     }
