@@ -220,5 +220,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function acceptInvitation(int $invitation_id) {
+        for ($i =  0 ; $i < sizeof($this->invitations) ; $i++ ){
+            if ($this->invitations[$i]->getId() == $invitation_id) {
+                $wishlist = $this->invitations[$i]->getWishlist() ;
+                unset($this->invitations[$i]) ;
+                $this->addToAuthorWhishlists($wishlist);
+            }
+        }
+    }
+
 
 }

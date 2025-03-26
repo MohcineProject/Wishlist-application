@@ -37,7 +37,7 @@
                             <p>Email Inviter :{{invitation.inviter.email ?? 'Unavailable'}} </p>
                         </div>
                         <div class="wishlist-actions">
-                            <button title="Accept"><span>✔</span></button>
+                            <button title="Accept"><span><a href="{{path('app_accept_invitation', {'id': invitation.id})}}"  >✔</a></span></button>
                             <button title="Delete"><span>🗑️</span></button>
                         </div>
                         <div class="wishlist-items">

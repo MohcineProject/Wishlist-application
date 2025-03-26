@@ -95,6 +95,21 @@ final class InvitationController extends AbstractController
     }
 
 
+    #[Route('/accept_invitation/{id}' , name: 'app_accept_invitation' , methods:['POST', 'GET'])]
+    public function acceptInvitation(Invitation $invitation ){
+        $user = $this->getUser();
+        if ($user) {
+        $user->acceptInvitation($invitation->getId());
+        return new Response('Invitation accepté avec succès!', Response::HTTP_OK);
+    } else {
+        return $this->createAccessDeniedException("Vous pouvez accèder cette API sans authentification!") ;
+    }
+    }
+
+
+
+
+    
     private function generateJointCreationURL(int $invitation_id): string {
         $secretKey = 'top_secret_key_789/*-'; 
         $hash = hash_hmac('sha256', (string) $invitation_id, $secretKey);
@@ -131,6 +146,8 @@ final class InvitationController extends AbstractController
         return (int) $invitation_id;
     }
     
+    
+
 }
 
       /* $form = $this->createForm(InvitationType::class, $invitation);
