@@ -49,17 +49,36 @@ final class WishlistController extends AbstractController
 
     #[Route('/{id}', name: 'app_wishlist_show', methods: ['GET'])]
 public function show(Wishlist $wishlist, Request $request): Response
-{
+    {
     $sortBy = $request->query->get('sort', 'price_asc');
     $searchQuery = $request->query->get('search', '');
 
+    // Convert PersistentCollection to an array
+    $items = $wishlist->getItems()->toArray();
+
+    // Sort items based on the sortBy parameter
+    if ($sortBy === 'price_asc') {
+        usort($items, fn($a, $b) => $a->getPrice() <=> $b->getPrice());
+    } elseif ($sortBy === 'price_desc') {
+        usort($items, fn($a, $b) => $b->getPrice() <=> $a->getPrice());
+    }
+    elseif ($sortBy === 'name_asc') {
+        // Sort items alphabetically in ascending order
+        usort($items, fn($a, $b) => strcmp($a->getTitle(), $b->getTitle()));
+    } elseif ($sortBy === 'name_desc') {
+        // Sort items alphabetically in descending order
+        usort($items, fn($a, $b) => strcmp($b->getTitle(), $a->getTitle()));
+    }
+  
+
     return $this->render('wishlist/show.html.twig', [
         'wishlist' => $wishlist,
+        'items' => $items, // Pass sorted items to the template
         'view_mode' => 'grid',
         'sort_by' => $sortBy,
         'search_query' => $searchQuery,
     ]);
-}
+    }
 
     
 

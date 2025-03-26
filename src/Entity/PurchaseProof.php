@@ -23,8 +23,8 @@ class PurchaseProof
     #[ORM\JoinColumn(nullable: false)]
     private ?Item $item = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'purchaseProofs')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'purchaseProofs',cascade: ['remove'])]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $buyer = null;
 
     public function getId(): ?int

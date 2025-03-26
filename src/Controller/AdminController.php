@@ -8,7 +8,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
+use App\Entity\User;
 use App\Entity\Item;
 use App\Entity\Wishlist;
 use Twig\TokenParser\UseTokenParser;
@@ -55,31 +57,36 @@ final class AdminController extends AbstractController
         ]);
     }
 
+   
+
     #[Route('/admin/user/{id}/lock', name: 'admin_user_lock', methods: ['POST'])]
-    public function lockUser(User $user, EntityManagerInterface $entityManager): Response
+    public function lockUser(User $user, EntityManagerInterface $entityManager): RedirectResponse
     {
         $user->setIsLocked(true);
         $entityManager->flush();
 
-        return $this->redirectToRoute('admin_users');
+        $this->addFlash('success', "User has been locked.");
+        return $this->redirectToRoute('admin_dashboard');
     }
 
     #[Route('/admin/user/{id}/unlock', name: 'admin_user_unlock', methods: ['POST'])]
-    public function unlockUser(User $user, EntityManagerInterface $entityManager): Response
+    public function unlockUser(User $user, EntityManagerInterface $entityManager): RedirectResponse
     {
         $user->setIsLocked(false);
         $entityManager->flush();
 
-        return $this->redirectToRoute('admin_users');
+        $this->addFlash('success', "User has been unlocked.");
+        return $this->redirectToRoute('admin_dashboard');
     }
 
     #[Route('/admin/user/{id}/delete', name: 'admin_user_delete', methods: ['POST'])]
-    public function deleteUser(User $user, EntityManagerInterface $entityManager): Response
+    public function deleteUser(User $user, EntityManagerInterface $entityManager): RedirectResponse
     {
-        $entityManager->remove($user);
+        $entityManager->remove(object: $user);
         $entityManager->flush();
 
-        return $this->redirectToRoute('admin_users');
+        $this->addFlash('success', "User has been deleted.");
+        return $this->redirectToRoute('admin_dashboard');
     }
 
 }
