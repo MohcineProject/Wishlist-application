@@ -62,6 +62,7 @@
             font-size: 1rem;
             cursor: pointer;
             transition: 0.3s;
+            margin-top: 15px;
         }
         .btn:hover {
             background-color: #99CC33;
@@ -87,15 +88,19 @@
         <div class="container">
             <section class="form-section">
                 {{ form_start(form, {'attr': {'class': 'input-box'}}) }}
-                {{ form_row(form.title, {'attr': {'class': 'form-control'}}) }}
-                {{ form_row(form.url, {'attr': {'class': 'form-control'}}) }}
-                {{ form_row(form.price, {'attr': {'class': 'form-control'}}) }}
-                {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
-                
-                <h3>Item Image</h3>
-                {{ form_row(form.imageFile, {'attr': {'class': 'form-control'}}) }}
-                
-                <button class="btn">Confirm</button>
+
+                    {{ form_row(form.title, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.url, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.price, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+
+                    <h3 style="margin-top: 20px;">Item Image</h3>
+                    {{ form_row(form.imageFile, {'attr': {'class': 'form-control'}}) }}
+
+                    {{ form_rest(form) }} {# ✅ Inclut le token CSRF ici #}
+
+                    <button class="btn" type="submit">Confirm</button>
+
                 {{ form_end(form) }}
             </section>
         </div>
