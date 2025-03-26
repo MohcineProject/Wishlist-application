@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} My Wishlists {% endblock %}
+{% block title %}My Wishlists{% endblock %}
 
 {% block body %} 
 <style>
@@ -71,6 +71,11 @@
         border-radius: 5px;
         font-size: 1.5em;
     }
+    .wishlist-footer {
+        margin-top: 10px;
+        font-size: 0.9em;
+        color: #e0f7fa;
+    }
     .wishlist-actions {
         display: flex;
         gap: 10px;
@@ -106,19 +111,31 @@
 
 <div class="container">
     {% for wishlist in wishlists %}
-    <div class="wishlist">
-        <h2>{{ wishlist.name }}</h2>
-        <div class="wishlist-items">
-        {% for item in wishlist.items %}
-        <div class="wishlist-item">📷</div>
-        {% endfor %}
+        <div class="wishlist">
+            <h2>
+                <a href="{{ path('app_wishlist_show', { 'id': wishlist.id }) }}">
+                    {{ wishlist.name }}
+                </a>
+            </h2>
+
+            <div class="wishlist-items">
+                {% for item in wishlist.items %}
+                    <div class="wishlist-item">📷</div>
+                {% else %}
+                    <p class="empty-state">No items yet.</p>
+                {% endfor %}
+            </div>
+
+            <p class="wishlist-footer">{{ wishlist.deadline ? wishlist.deadline|date('Y-m-d') : 'No deadline' }}</p>
+
+            <div class="wishlist-actions">
+                <button title="Share wishlist">↗</button>
+                <button title="Edit title">✏</button>
+                <button title="Delete wishlist">🗑</button>
+            </div>
         </div>
-        <div class="wishlist-actions">
-            <button title="Share wishlist">↗</button>
-            <button title="Edit title">✏</button>
-            <button title="Delete wishlist">🗑</button>
-        </div>
-    </div>
+    {% else %}
+        <p>You have no wishlists yet. Start by <a href="{{ path('app_wishlist_new') }}">creating one</a>.</p>
     {% endfor %}
 </div>
 {% endblock %}

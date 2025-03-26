@@ -1,3 +1,4 @@
+{# templates/wishlist/new.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Create New Wishlist{% endblock %}
@@ -99,7 +100,7 @@
 {% block body %}
     <div class="container">
         <h1 class="my-4">Create New Wishlist</h1>
-        
+
         {{ form_start(form, {'attr': {'class': 'wishlist-form'}}) }}
             <div class="form-group">
                 {{ form_label(form.name) }}
