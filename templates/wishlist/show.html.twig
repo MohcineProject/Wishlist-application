@@ -3,275 +3,210 @@
 {% block title %}{{ wishlist.name }}{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <style>
-        /* Global Styles */
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #00B8DE, #99CC33) fixed;
-            color: white;
-            padding: 20px;
-            margin: 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 0 10px;
-        }
+{{ parent() }}
+<style>
+    body {
+        font-family: 'Helvetica Neue', sans-serif;
+        margin: 0;
+        background: linear-gradient(135deg, #00B8DE, #99CC33);
+        color: #fff;
+    }
 
-        /* Header */
-        .wishlist-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px;
+    /* Sticky Navbar */
+    .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        position: sticky;
+        top: 0;
+        background: rgba(0,0,0,0.3);
+        backdrop-filter: blur(10px);
+        z-index: 10;
+    }
+    .navbar .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    .navbar input {
+        padding: 8px;
+        border-radius: 20px;
+        border: none;
+        min-width: 200px;
+    }
+    .navbar .actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    /* Header section */
+    .hero {
+        text-align: center;
+        padding: 40px 20px;
+    }
+    .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    .hero .add-btn {
+        background: #fff;
+        color: #00B8DE;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+    .hero .add-btn:hover {
+        background: #99CC33;
+        color: #fff;
+    }
+
+    /* Grid items */
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: scale(1.03);
+    }
+
+    .card-image {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+    }
+    .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .card-body {
+        padding: 15px;
+        flex-grow: 1;
+    }
+
+    .card-body h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+    }
+
+    .card-body p {
+        margin: 0 0 10px 0;
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        background: rgba(0,0,0,0.2);
+    }
+    .card-footer .price {
+        font-weight: bold;
+    }
+    .card-footer .actions {
+        display: flex;
+        gap: 8px;
+    }
+    .action-btn {
+        background: #fff;
+        color: #00B8DE;
+        border: none;
+        border-radius: 8px;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .action-btn:hover {
+        background: #99CC33;
+        color: #fff;
+    }
+
+    @media (max-width: 600px) {
+        .navbar {
+            flex-direction: column;
+            gap: 10px;
         }
-        .wishlist-title {
-            margin: 0;
+        .hero h1 {
             font-size: 2rem;
         }
-        .wishlist-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .add-item-btn {
-            background-color: white;
-            color: #00B8DE;
-            padding: 10px 20px;
-            border: 2px solid #00B8DE;
-            border-radius: 8px;
-            transition: 0.3s;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .add-item-btn:hover {
-            background-color: #99CC33;
-            color: white;
-            border-color: #99CC33;
-        }
-        .search-bar {
-            padding: 8px;
-            border: 2px solid #99CC33;
-            border-radius: 8px;
-            min-width: 180px;
-        }
-        .sort-select {
-            padding: 8px;
-            border: 2px solid #99CC33;
-            border-radius: 8px;
-            background-color: white;
-            color: #00B8DE;
-        }
-        .view-switcher {
-            background: white;
-            color: #00B8DE;
-            border: 2px solid #00B8DE;
-            padding: 5px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .view-switcher:hover {
-            background-color: #99CC33;
-            color: white;
-            border-color: #99CC33;
-        }
-
-        /* List & Grid Item Styles */
-        .items-list, .items-grid {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0;
-        }
-        .item, .grid-item {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid #99CC33;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
-            padding: 15px;
-            color: #fff;
-            display: flex;
-            align-items: center;
-        }
-        .item img, .grid-image {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-right: 20px;
-            flex-shrink: 0;
-        }
-        .item-details, .grid-details {
-            flex: 1;
-        }
-        .item-actions, .grid-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-        .action-btn {
-            background-color: white;
-            color: #00B8DE;
-            border: 2px solid #00B8DE;
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .action-btn:hover {
-            background-color: #99CC33;
-            color: white;
-            border-color: #99CC33;
-        }
-
-        /* Grid Specific */
-        .items-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        .grid-image-container {
-            width: 100%;
-            padding-top: 100%; /* 1:1 Aspect Ratio */
-            position: relative;
-        }
-        .grid-image {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .empty-state {
-            text-align: center;
-            font-size: 1.5rem;
-            padding: 50px;
-            opacity: 0.8;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .wishlist-header {
-                flex-direction: column;
-                gap: 20px;
-                align-items: flex-start;
-            }
-            .item, .grid-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .item img {
-                margin-right: 0;
-                margin-bottom: 15px;
-            }
-            .item-actions, .grid-actions {
-                justify-content: center;
-            }
-            .search-bar, .sort-select {
-                width: 100%;
-            }
-        }
-    </style>
+    }
+</style>
 {% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="wishlist-header">
-        <div>
-            <h1 class="wishlist-title">{{ wishlist.name }}</h1>
-            <p>{{ wishlist.items|length }} items</p>
-        </div>
-        <div class="wishlist-actions">
-            <a href="{{ path('app_item_new', { 'wishlistId': wishlist.id }) }}" class="add-item-btn">Add Item</a>
-            <input type="text" class="search-bar" placeholder="Search items..." value="{{ search_query ?? '' }}">
-            <select class="sort-select" id="sortSelect">
-                <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Price ↑</option>
-                <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Price ↓</option>
-                <option value="name_asc" {% if sort_by == 'name_asc' %}selected{% endif %}>Name A-Z</option>
-                <option value="name_desc" {% if sort_by == 'name_desc' %}selected{% endif %}>Name Z-A</option>
-            </select>
-            <button class="view-switcher" onclick="toggleViewMode()">
-                {{ view_mode == 'grid' ? '≡' : '⏹' }}
-            </button>
-        </div>
+<div class="navbar">
+    <div class="logo">MyWishlist</div>
+    <input type="text" placeholder="Search items...">
+    <div class="actions">
+        <select onchange="location = this.value;">
+            <option disabled selected>Sort</option>
+            <option value="?sort=price_asc">Price ↑</option>
+            <option value="?sort=price_desc">Price ↓</option>
+            <option value="?sort=name_asc">Name A-Z</option>
+            <option value="?sort=name_desc">Name Z-A</option>
+        </select>
+        <button onclick="toggleView()" class="action-btn">View</button>
     </div>
+</div>
 
-    {# List View #}
-    <ul class="items-list" id="listView" style="display: {{ view_mode != 'grid' ? 'block' : 'none' }};">
-        {% for item in wishlist.items %}
-            <li class="item">
-                <img src="{{ item.image ? asset('uploads/images/' ~ item.image) : 'https://via.placeholder.com/120?text=No+Image' }}" alt="{{ item.title }}">
-                <div class="item-details">
-                    <h3>{{ item.title }}</h3>
-                    <p>{{ item.description ?? 'No description available' }}</p>
-                    <p>${{ item.price|number_format(2) }}</p>
-                    <div class="item-actions">
-                        {% if item.url %}
-                            <button class="action-btn" onclick="window.open('{{ item.url }}', '_blank')">🛒</button>
-                        {% endif %}
-                        <button class="action-btn" onclick="window.location.href='{{ path('app_item_edit', {'id': item.id}) }}'">✏️</button>
-                        <form method="post" action="{{ path('app_item_delete', {'id': item.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');" style="display:inline;">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
-                            <button class="action-btn" title="Delete">🗑️</button>
-                        </form>
-                    </div>
-                </div>
-            </li>
-        {% else %}
-            <div class="empty-state">No items in this wishlist yet</div>
-        {% endfor %}
-    </ul>
+<div class="hero">
+    <h1>{{ wishlist.name }}</h1>
+    <p>{{ wishlist.items|length }} items total</p>
+    <a href="{{ path('app_item_new', { 'wishlistId': wishlist.id }) }}" class="add-btn">+ Add New Item</a>
+</div>
 
-    {# Grid View #}
-    <ul class="items-grid" id="gridView" style="display: {{ view_mode == 'grid' ? 'grid' : 'none' }};">
-        {% for item in wishlist.items %}
-            <li class="grid-item">
-                <div class="grid-image-container">
-                    <img src="{{ item.image ? asset('uploads/images/' ~ item.image) : 'https://via.placeholder.com/300?text=No+Image' }}" class="grid-image" alt="{{ item.title }}">
+<div class="grid-container">
+    {% for item in wishlist.items %}
+        <div class="card">
+            <div class="card-image">
+                <img src="{{ item.image ? asset('uploads/images/' ~ item.image) : 'https://via.placeholder.com/300?text=No+Image' }}" alt="{{ item.title }}">
+            </div>
+            <div class="card-body">
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.description|default('No description') }}</p>
+            </div>
+            <div class="card-footer">
+                <span class="price">${{ item.price|number_format(2) }}</span>
+                <div class="actions">
+                    {% if item.url %}
+                        <button class="action-btn" onclick="window.open('{{ item.url }}', '_blank')">🛒</button>
+                    {% endif %}
+                    <a href="{{ path('app_item_edit', {'id': item.id}) }}" class="action-btn">✏️</a>
+                    <form method="post" action="{{ path('app_item_delete', {'id': item.id}) }}" onsubmit="return confirm('Are you sure?');" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
+                        <button type="submit" class="action-btn">🗑️</button>
+                    </form>
                 </div>
-                <div class="grid-details">
-                    <h3>{{ item.title }}</h3>
-                    <p>${{ item.price|number_format(2) }}</p>
-                    <div class="grid-actions">
-                        {% if item.url %}
-                            <button class="action-btn" onclick="window.open('{{ item.url }}', '_blank')">🛒</button>
-                        {% endif %}
-                        <button class="action-btn" onclick="window.location.href='{{ path('app_item_edit', {'id': item.id}) }}'">✏️</button>
-                        <form method="post" action="{{ path('app_item_delete', {'id': item.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');" style="display:inline;">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
-                            <button class="action-btn" title="Delete">🗑️</button>
-                        </form>
-                    </div>
-                </div>
-            </li>
-        {% else %}
-            <div class="empty-state">No items in this wishlist yet</div>
-        {% endfor %}
-    </ul>
+            </div>
+        </div>
+    {% else %}
+        <p style="text-align:center; padding:50px;">No items yet in this wishlist.</p>
+    {% endfor %}
 </div>
 
 <script>
-    // Toggle between list and grid view
-    function toggleViewMode() {
-        var listView = document.getElementById('listView');
-        var gridView = document.getElementById('gridView');
-        if (listView.style.display === 'block') {
-            listView.style.display = 'none';
-            gridView.style.display = 'grid';
-        } else {
-            gridView.style.display = 'none';
-            listView.style.display = 'block';
-        }
+    function toggleView() {
+        alert('Grid view is currently default. Add alternate views if desired!');
     }
 </script>
 {% endblock %}
