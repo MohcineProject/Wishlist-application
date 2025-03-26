@@ -1,4 +1,3 @@
-{# templates/wishlist/show.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ wishlist.name }}{% endblock %}
@@ -6,91 +5,187 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        .items-list {
-            display: {% if view_mode != 'grid' %}block{% else %}none{% endif %};
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #00B8DE, #99CC33) fixed;
+            color: white;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+        .wishlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        .wishlist-title {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .wishlist-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .add-item-btn {
+            background-color: white;
+            color: #00B8DE;
+            padding: 10px 20px;
+            border: 2px solid #00B8DE;
+            border-radius: 8px;
+            transition: 0.3s;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .add-item-btn:hover {
+            background-color: #99CC33;
+            color: white;
+            border-color: #99CC33;
+        }
+        .search-bar {
+            padding: 8px;
+            border: 2px solid #99CC33;
+            border-radius: 8px;
+        }
+        .sort-select {
+            padding: 8px;
+            border: 2px solid #99CC33;
+            border-radius: 8px;
+        }
+        .view-switcher {
+            background: white;
+            color: #00B8DE;
+            border: 2px solid #00B8DE;
+            padding: 5px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .view-switcher:hover {
+            background-color: #99CC33;
+            color: white;
+            border-color: #99CC33;
         }
 
-        .items-grid {
-            display: {% if view_mode == 'grid' %}grid{% else %}none{% endif %};
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+        .items-list, .items-grid {
+            list-style: none;
             padding: 0;
-            margin: 20px 0 0 0;
-            list-style-type: none;
         }
-
-        .item-image {
+        .item, .grid-item {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #99CC33;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            padding: 15px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+        .item img, .grid-image {
             width: 120px;
             height: 120px;
             object-fit: cover;
+            border-radius: 10px;
+            margin-right: 20px;
+        }
+        .item-details, .grid-details {
+            flex: 1;
+        }
+        .item-actions, .grid-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .action-btn {
+            background-color: white;
+            color: #00B8DE;
+            border: 2px solid #00B8DE;
+            padding: 6px 12px;
             border-radius: 8px;
-            background-color: #f5f5f5;
-            flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            overflow: hidden;
+            cursor: pointer;
+            transition: 0.3s;
         }
-
+        .action-btn:hover {
+            background-color: #99CC33;
+            color: white;
+            border-color: #99CC33;
+        }
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
         .grid-image-container {
+            width: 100%;
+            padding-top: 100%;
             position: relative;
-            padding-top: 100%; /* 1:1 Aspect Ratio */
-            overflow: hidden;
         }
-
         .grid-image {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             object-fit: cover;
         }
-
-        /* Autres styles conservés... */
+        .empty-state {
+            text-align: center;
+            font-size: 1.5rem;
+            padding: 50px;
+            opacity: 0.8;
+        }
+        @media (max-width: 768px) {
+            .wishlist-header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+        }
     </style>
 {% endblock %}
 
 {% block body %}
+<div class="container">
     <div class="wishlist-header">
         <div>
             <h1 class="wishlist-title">{{ wishlist.name }}</h1>
-            <div class="item-count">{{ wishlist.items|length }} items</div>
+            <p>{{ wishlist.items|length }} items</p>
         </div>
         <div class="wishlist-actions">
-            <a href="{{ path('app_item_new', { 'wishlistId': wishlist.id }) }}" class="add-item-btn">Add item</a>
-            <div class="search-sort-container">
-                <input type="text" class="search-bar" placeholder="Search items..." value="{{ search_query ?? '' }}">
-                <select class="sort-select" id="sortSelect">
-                    <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
-                    <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
-                    <option value="name_asc" {% if sort_by == 'name_asc' %}selected{% endif %}>Name: A-Z</option>
-                    <option value="name_desc" {% if sort_by == 'name_desc' %}selected{% endif %}>Name: Z-A</option>
-                </select>
-                <button class="view-switcher" title="Switch view" onclick="toggleViewMode()">
-                    {{ view_mode == 'grid' ? '≡' : '⏹' }}
-                </button>
-            </div>
+            <a href="{{ path('app_item_new', { 'wishlistId': wishlist.id }) }}" class="add-item-btn">Add Item</a>
+            <input type="text" class="search-bar" placeholder="Search items..." value="{{ search_query ?? '' }}">
+            <select class="sort-select" id="sortSelect">
+                <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Price ↑</option>
+                <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Price ↓</option>
+                <option value="name_asc" {% if sort_by == 'name_asc' %}selected{% endif %}>Name A-Z</option>
+                <option value="name_desc" {% if sort_by == 'name_desc' %}selected{% endif %}>Name Z-A</option>
+            </select>
+            <button class="view-switcher" onclick="toggleViewMode()">{{ view_mode == 'grid' ? '≡' : '⏹' }}</button>
         </div>
     </div>
 
-    {# List View #}
-    <ul class="items-list" id="listView">
+    <ul class="items-list" id="listView" style="display: {{ view_mode != 'grid' ? 'block' : 'none' }};">
         {% for item in wishlist.items %}
-            <li class="item" data-item-id="{{ item.id }}" data-price="{{ item.price ?? 0 }}">
-                <img src="{{ item.image ? asset('uploads/images/' ~ item.image) : 'https://via.placeholder.com/120?text=No+Image' }}" 
-                     alt="{{ item.title }}" 
-                     class="item-image">
+            <li class="item">
+                <img src="{{ item.image ? asset('uploads/images/' ~ item.image) : 'https://via.placeholder.com/120?text=No+Image' }}" alt="{{ item.title }}">
                 <div class="item-details">
-                    <h3 class="item-title">{{ item.title }}</h3>
-                    <p class="item-description">{{ item.description ?? 'No description available' }}</p>
-                    {% if item.price %}
-                        <div class="item-price">${{ item.price|number_format(2) }}</div>
-                    {% endif %}
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.description ?? 'No description available' }}</p>
+                    <p>${{ item.price|number_format(2) }}</p>
                     <div class="item-actions">
                         {% if item.url %}
-                            <button class="action-btn buy-btn" title="Buy" onclick="window.open('{{ item.url }}', '_blank')">🛒</button>
+                            <button class="action-btn" onclick="window.open('{{ item.url }}', '_blank')">🛒</button>
                         {% endif %}
-                        <button class="action-btn edit-btn" title="Edit" onclick="window.location.href='{{ path('app_item_edit', {'id': item.id}) }}'">✏️</button>
-                        <button class="action-btn delete-btn" title="Delete" data-delete-url="{{ path('app_item_delete', {'id': item.id}) }}">🗑️</button>
+                        <button class="action-btn" onclick="window.location.href='{{ path('app_item_edit', {'id': item.id}) }}'">✏️</button>
+                        <button class="action-btn delete-btn" data-delete-url="{{ path('app_item_delete', {'id': item.id}) }}">🗑️</button>
                     </div>
                 </div>
             </li>
@@ -99,26 +194,21 @@
         {% endfor %}
     </ul>
 
-    {# Grid View #}
-    <ul class="items-grid" id="gridView">
+    <ul class="items-grid" id="gridView" style="display: {{ view_mode == 'grid' ? 'grid' : 'none' }};">
         {% for item in wishlist.items %}
-            <li class="grid-item" data-item-id="{{ item.id }}" data-price="{{ item.price ?? 0 }}">
+            <li class="grid-item">
                 <div class="grid-image-container">
-                    <img src="{{ item.image ? asset('uploads/images/' ~ item.image) : 'https://via.placeholder.com/300?text=No+Image' }}" 
-                         alt="{{ item.title }}" 
-                         class="grid-image">
+                    <img src="{{ item.image ? asset('uploads/images/' ~ item.image) : 'https://via.placeholder.com/300?text=No+Image' }}" class="grid-image" alt="{{ item.title }}">
                 </div>
                 <div class="grid-details">
-                    <h3 class="grid-title">{{ item.title }}</h3>
-                    {% if item.price %}
-                        <div class="grid-price">${{ item.price|number_format(2) }}</div>
-                    {% endif %}
+                    <h3>{{ item.title }}</h3>
+                    <p>${{ item.price|number_format(2) }}</p>
                     <div class="grid-actions">
                         {% if item.url %}
-                            <button class="action-btn buy-btn" title="Buy" onclick="window.open('{{ item.url }}', '_blank')">🛒</button>
+                            <button class="action-btn" onclick="window.open('{{ item.url }}', '_blank')">🛒</button>
                         {% endif %}
-                        <button class="action-btn edit-btn" title="Edit" onclick="window.location.href='{{ path('app_item_edit', {'id': item.id}) }}'">✏️</button>
-                        <button class="action-btn delete-btn" title="Delete" data-delete-url="{{ path('app_item_delete', {'id': item.id}) }}">🗑️</button>
+                        <button class="action-btn" onclick="window.location.href='{{ path('app_item_edit', {'id': item.id}) }}'">✏️</button>
+                        <button class="action-btn delete-btn" data-delete-url="{{ path('app_item_delete', {'id': item.id}) }}">🗑️</button>
                     </div>
                 </div>
             </li>
@@ -126,4 +216,5 @@
             <div class="empty-state">No items in this wishlist yet</div>
         {% endfor %}
     </ul>
+</div>
 {% endblock %}
