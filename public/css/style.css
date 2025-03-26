@@ -322,6 +322,12 @@ body {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
+
+.card-body {
+    padding: 16px;
+    text-align: center;
+}
+
 /* Tables */
 .table thead th {
     background-color: var(--imt-primary);
