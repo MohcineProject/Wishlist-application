@@ -185,7 +185,10 @@
                             <button class="action-btn" onclick="window.open('{{ item.url }}', '_blank')">🛒</button>
                         {% endif %}
                         <button class="action-btn" onclick="window.location.href='{{ path('app_item_edit', {'id': item.id}) }}'">✏️</button>
-                        <button class="action-btn delete-btn" data-delete-url="{{ path('app_item_delete', {'id': item.id}) }}">🗑️</button>
+                        <form method="post" action="{{ path('app_item_delete', {'id': item.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');" style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
+                            <button class="action-btn" title="Delete">🗑️</button>
+                        </form>
                     </div>
                 </div>
             </li>
@@ -208,7 +211,10 @@
                             <button class="action-btn" onclick="window.open('{{ item.url }}', '_blank')">🛒</button>
                         {% endif %}
                         <button class="action-btn" onclick="window.location.href='{{ path('app_item_edit', {'id': item.id}) }}'">✏️</button>
-                        <button class="action-btn delete-btn" data-delete-url="{{ path('app_item_delete', {'id': item.id}) }}">🗑️</button>
+                        <form method="post" action="{{ path('app_item_delete', {'id': item.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');" style="display:inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
+                            <button class="action-btn" title="Delete">🗑️</button>
+                        </form>
                     </div>
                 </div>
             </li>

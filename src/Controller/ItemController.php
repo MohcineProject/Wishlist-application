@@ -94,11 +94,16 @@ final class ItemController extends AbstractController
     #[Route('/{id}', name: 'app_item_delete', methods: ['POST'])]
     public function delete(Request $request, Item $item, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$item->getId(), $request->getPayload()->getString('_token'))) {
+        $wishlistId = $item->getWishlist()->getId();
+    
+        if ($this->isCsrfTokenValid('delete' . $item->getId(), $request->request->get('_token'))) {
             $entityManager->remove($item);
             $entityManager->flush();
         }
-
-        return $this->redirectToRoute('app_item_index', [], Response::HTTP_SEE_OTHER);
+    
+        return $this->redirectToRoute('app_wishlist_show', [
+            'id' => $wishlistId
+        ]);
     }
+    
 }
