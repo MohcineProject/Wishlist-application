@@ -3,16 +3,22 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Doctrine\ORM\EntityManagerInterface;
 
 class SecurityController extends AbstractController
 {
     #[Route('/login', name: 'login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(Request $request , AuthenticationUtils $authenticationUtils): Response
     {
+
+        $invitation_token = $request->get('invitation_token');
+
+        if ($invitation_token) {
+            $request->getSession()->set('invitation_token',$invitation_token) ;
+        }
         // Récupère les erreurs de connexion, s'il y en a
         $error = $authenticationUtils->getLastAuthenticationError();
 

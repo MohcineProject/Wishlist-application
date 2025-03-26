@@ -2,26 +2,39 @@
 
 namespace App\Controller;
 
+use App\Entity\Invitation;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use App\Entity\PurchaseProof;
+use Doctrine\ORM\EntityManagerInterface;
 
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'homepage')]
-    public function index(): Response
+    public function index(Request $request , EntityManagerInterface $entityManager): Response
     {
 
-        $joint_creation_URL = isset($_GET["joint_creation_URL"]) ? $_GET["joint_creation_URL"] : null;
         $user = $this->getUser(); // Récupère l'utilisateur connecté
 
         $links = [
         ];
 
-        if ($joint_creation_URL) {
-            $links["joint_creation_URL"] = $joint_creation_URL;
+
+        $invitation_token = $request->getSession()->get("invitation_token");
+        if($invitation_token){
+        $invitation_id = InvitationController::verifyJointCreationToken($invitation_token);
+
+
+        if ($invitation_id) {
+            $user = $this->getUser();
+             if ($user) {
+                $user->addInvitation($entityManager->find(Invitation::class, $invitation_id));
+                $entityManager->persist($user);
+                $entityManager->flush();
+             }
+
+        }
         }
 
         // Ajoutez le lien "Admin Dashboard" uniquement si l'utilisateur est admin
@@ -40,6 +53,7 @@ class HomeController extends AbstractController
             $links['Profile'] = $this->generateUrl('user_profile');
             $links['Logout'] = $this->generateUrl('logout');
             $links['See my purchase proofs'] = $this->generateUrl('user_purchase_proofs');
+            $links['See my invitations'] = $this->generateUrl('app_invitation_index');
         
             
 

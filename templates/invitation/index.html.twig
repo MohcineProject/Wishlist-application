@@ -1,33 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Invitation index{% endblock %}
+{% block title %}Wishlist Invitations{% endblock %}
 
 {% block body %}
-    <h1>Invitation index</h1>
+    <header>
+        <div class="user-icon"></div>
+        <h1><a href="#">Wishlist Invitations</a></h1>
+        <input type="text" class="search-bar" placeholder="Search...">
+        <div style="margin-left: 10px; cursor: pointer;">☰</div>
+    </header>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for invitation in invitations %}
-            <tr>
-                <td>{{ invitation.id }}</td>
-                <td>
-                    <a href="{{ path('app_invitation_show', {'id': invitation.id}) }}">show</a>
-                    <a href="{{ path('app_invitation_edit', {'id': invitation.id}) }}">edit</a>
-                </td>
-            </tr>
+    <div class="container">
+        {% if invitations|length > 0 %}
+            <div class="item-section">
+                {% for invitation in invitations %}
+                    <div class="wishlist">
+                        <h2>
+                            <a href="{{ path('app_invitation_show', {'id': invitation.id}) }}">
+                                Wishlist {{ invitation.id }}
+                            </a>
+                        </h2>
+                        <div class="wishlist-footer">
+                            <p>Inviter: {{ invitation.inviter.firstName ?? '' }} {{ invitation.inviter.lastName ?? 'Unavailable' }}</p>
+                            <p>Email Inviter :{{invitation.inviter.email ?? 'Unavailable'}} </p>
+                        </div>
+                        <div class="wishlist-actions">
+                            <button title="Accept"><span>✔</span></button>
+                            <button title="Delete"><span>🗑️</span></button>
+                        </div>
+                        <div class="wishlist-items">
+                            <div class="user-icon" style="width: 50px; height: 50px;"></div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% else %}
-            <tr>
-                <td colspan="2">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <p class="info-text">No invitations found.</p>
+        {% endif %}
+    </div>
 
-    <a href="{{ path('app_invitation_new') }}">Create new</a>
+    <div class="navbar">
+        <button class="add-wishlist-btn">
+            <a href="{{ path('app_invitation_new') }}" style="color: white; text-decoration: none;">Create new invitation</a>
+        </button>
+    </div>
 {% endblock %}

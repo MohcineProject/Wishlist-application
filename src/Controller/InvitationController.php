@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Invitation;
 use App\Entity\Wishlist;
 use App\Form\InvitationType;
-use App\Repository\InvitationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,10 +16,16 @@ use Symfony\Component\Routing\Attribute\Route;
 final class InvitationController extends AbstractController
 {
     #[Route(name: 'app_invitation_index', methods: ['GET'])]
-    public function index(InvitationRepository $invitationRepository): Response
+    public function index(): Response
     {
+        $user = $this->getUser();
+
+        if (!$user ) {
+            return $this->createAccessDeniedException("Vous devez être connecté pour accéder à cette page.");
+        }
+
         return $this->render('invitation/index.html.twig', [
-            'invitations' => $invitationRepository->findAll(),
+            'invitations' => $user->getInvitations(),
         ]);
     }
 
@@ -96,11 +101,11 @@ final class InvitationController extends AbstractController
         $token = base64_encode($invitation_id . '|' . $hash);
         
         $serverIp = $_SERVER['SERVER_ADDR'] ?? '127.0.0.1';
-        return sprintf('http://%s?invitation_token=%s', $serverIp, rtrim(strtr($token, '+/', '-_'), '='));
+        return sprintf('http://%s/login?invitation_token=%s', $serverIp, rtrim(strtr($token, '+/', '-_'), '='));
     }
     
 
-    private function verifyJointCreationToken(string $token): ?int {
+    public static function verifyJointCreationToken(string $token): ?int {
         $secretKey = 'top_secret_key_789/*-'; 
     
         $token = strtr($token, '-_', '+/'); 
