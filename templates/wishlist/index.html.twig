@@ -1,104 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}My Wishlists{% endblock %}
+{% block title %} My Wishlists {% endblock %}
 
-{% block body %} 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #00B8DE, #99CC33) fixed;
-        color: white;
-        text-align: center;
-        padding: 20px;
-    }
-    .container {
-        max-width: 800px;
-        margin: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-    header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-    }
-    .search-bar {
-        padding: 8px;
-        border-radius: 8px;
-        border: 2px solid #99CC33;
-    }
-    .add-wishlist-btn {
-        background: white;
-        color: #00B8DE;
-        padding: 10px 15px;
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: bold;
-        transition: 0.3s;
-        display: inline-block;
-        margin: 15px 0;
-    }
-    .add-wishlist-btn:hover {
-        background: #99CC33;
-        color: white;
-        transform: scale(1.1);
-    }
-    .wishlist {
-        background: rgba(255, 255, 255, 0.2);
-        padding: 15px;
-        border-radius: 10px;
-        border: 2px solid #99CC33;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        width: 100%;
-        max-width: 600px;
-        margin: auto;
-    }
-    .wishlist h2 {
-        margin: 10px 0;
-    }
-    .wishlist-items {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    .wishlist-item {
-        background: white;
-        color: #00B8DE;
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 1.5em;
-    }
-    .wishlist-footer {
-        margin-top: 10px;
-        font-size: 0.9em;
-        color: #e0f7fa;
-    }
-    .wishlist-actions {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-top: 10px;
-    }
-    .wishlist-actions button {
-        background: white;
-        border: none;
-        padding: 10px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-    .wishlist-actions button:hover {
-        background: #99CC33;
-        color: white;
-    }
-    @media (max-width: 768px) {
-        .wishlist {
-            width: 90%;
-        }
-    }
+{% block body  %} 
+
+
+<style> 
+.modal {
+    display: none; /* Hide by default */
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content {
+    text-align: center;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
 </style>
 
 <header>
@@ -111,31 +43,94 @@
 
 <div class="container">
     {% for wishlist in wishlists %}
-        <div class="wishlist">
-            <h2>
-                <a href="{{ path('app_wishlist_show', { 'id': wishlist.id }) }}">
-                    {{ wishlist.name }}
-                </a>
-            </h2>
-
-            <div class="wishlist-items">
-                {% for item in wishlist.items %}
-                    <div class="wishlist-item">📷</div>
-                {% else %}
-                    <p class="empty-state">No items yet.</p>
-                {% endfor %}
-            </div>
-
-            <p class="wishlist-footer">{{ wishlist.deadline ? wishlist.deadline|date('Y-m-d') : 'No deadline' }}</p>
-
-            <div class="wishlist-actions">
-                <button title="Share wishlist">↗</button>
-                <button title="Edit title">✏</button>
-                <button title="Delete wishlist">🗑</button>
-            </div>
+    <div class="wishlist">
+        <h2>{{ wishlist.name }}</h2>
+        <div class="wishlist-items">
+            {% for item in wishlist.items %}
+            <div class="wishlist-item">📷</div>
+            {% endfor %}
         </div>
-    {% else %}
-        <p>You have no wishlists yet. Start by <a href="{{ path('app_wishlist_new') }}">creating one</a>.</p>
+        <p class="wishlist-footer">{{ wishlist.deadline | date('F j, Y') }}</p>
+        
+        <!-- Share Button -->
+        <button type="button" class="share-btn" data-wishlist-id="{{ wishlist.id }}">↗</button>
+
+        <button title="Edit title">✏</button>
+        <button title="Delete wishlist">🗑</button>
+    </div>
     {% endfor %}
 </div>
+
+<!-- Modal Popup -->
+<div id="share-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Share Wishlist</h3>
+        <button id="invite-co-worker">Invite a Co-Worker</button>
+        <button id="share-wishes">Share Your Wishes!</button>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const shareButtons = document.querySelectorAll(".share-btn");
+    const modal = document.getElementById("share-modal");
+    const closeBtn = document.querySelector(".close");
+    
+    let selectedWishlistId = null; // Store the selected wishlist ID
+
+    shareButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            selectedWishlistId = this.dataset.wishlistId;
+            modal.style.display = "block";
+        });
+    });
+
+    closeBtn.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
+    // Handle Invite a Co-Worker Click
+    document.getElementById("invite-co-worker").addEventListener("click", async function () {
+        try {
+            const response = await fetch("{{path('app_invitation_new')}}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ wishlist_id: selectedWishlistId })
+            });
+
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+
+            const responseData = await response.json();
+            navigator.clipboard.writeText(responseData.url).then(() => {
+                alert("URL was copied to clipboard successfully!");
+            }).catch(err => {
+                alert("Error copying URL to clipboard: " +  err);
+            });
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Failed to send invitation.");
+        }
+    });
+
+    // Handle Share Your Wishes Click
+    document.getElementById("share-wishes").addEventListener("click", function () {
+        alert("Sharing your wishes! (Implement your sharing logic here)");
+    });
+});
+
+
+</script>
+
 {% endblock %}

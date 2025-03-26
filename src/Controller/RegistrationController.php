@@ -20,21 +20,38 @@ class RegistrationController extends AbstractController
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Hacher le mot de passe
-            $hashedPassword = $passwordHasher->hashPassword($user, plainPassword: $form->get('password')->getData());
-            $user->setPassword($hashedPassword);
+        if ($form->isSubmitted() ) {
+            
+            if ($form->isValid()){
+                // Hacher le mot de passe
+                $hashedPassword = $passwordHasher->hashPassword($user, plainPassword: $form->get('password')->getData());
+                $user->setPassword($hashedPassword);
 
-            // Sauvegarder l'utilisateur
-            $entityManager->persist($user);
-            $entityManager->flush();
+                // Sauvegarder l'utilisateur
+                $entityManager->persist($user);
+                $entityManager->flush();
 
-            // Rediriger vers la page de connexion
-            return $this->redirectToRoute('login');
+                // Rediriger vers la page de connexion
+                return $this->redirectToRoute('login');
+            }
+
+            if (!$form->isValid()) {
+                $errors = [];
+                foreach ($form->getErrors(true) as $error) {
+                    $errors[] = $error->getMessage();
+                }
+                return $this->render('registration/register.html.twig', [
+                    'registrationForm' => $form->createView(),
+                    'formErrors' => $errors,
+                ]);
+            }
+
         }
         else {
             // Si le formulaire n'est pas valide, les erreurs seront disponibles dans la vue
         }
+
+       
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
