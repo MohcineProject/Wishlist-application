@@ -21,7 +21,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() ) {
-            
+            dump($form->isValid()) ;
             if ($form->isValid()){
                 // Hacher le mot de passe
                 $hashedPassword = $passwordHasher->hashPassword($user, plainPassword: $form->get('password')->getData());
@@ -36,10 +36,12 @@ class RegistrationController extends AbstractController
             }
 
             if (!$form->isValid()) {
+                dump("I am here ") ; 
                 $errors = [];
                 foreach ($form->getErrors(true) as $error) {
                     $errors[] = $error->getMessage();
                 }
+                dump($errors);
                 return $this->render('registration/register.html.twig', [
                     'registrationForm' => $form->createView(),
                     'formErrors' => $errors,

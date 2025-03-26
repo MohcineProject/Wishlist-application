@@ -4,33 +4,34 @@
 
 {% block body  %} 
 
-
 <style> 
-.modal {
-    display: none; /* Hide by default */
-    position: fixed;
+/* Popup box styling */
+.popup-box {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed relative to the viewport */
     z-index: 1000;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    width: 220px;
 }
 
-.modal-content {
-    text-align: center;
-}
-
-.close {
+/* Close button styling */
+.popup-box .close {
     position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 24px;
+    top: 5px;
+    right: 8px;
+    font-size: 18px;
     cursor: pointer;
 }
 
+/* Center content inside the popup */
+.popup-box .content {
+    text-align: center;
+    margin-top: 20px;
+}
 </style>
 
 <header>
@@ -44,7 +45,9 @@
 <div class="container">
     {% for wishlist in wishlists %}
     <div class="wishlist">
-        <h2>{{ wishlist.name }}</h2>
+        <a href="{{ path('app_wishlist_show', { 'id': wishlist.id }) }}">
+            {{ wishlist.name }}
+        </a>
         <div class="wishlist-items">
             {% for item in wishlist.items %}
             <div class="wishlist-item">📷</div>
@@ -61,76 +64,106 @@
     {% endfor %}
 </div>
 
-<!-- Modal Popup -->
-<div id="share-modal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>Share Wishlist</h3>
+<!-- Popup Box -->
+<div id="popup-box" class="popup-box">
+    <span class="close">&times;</span>
+    <h4>Share Wishlist</h4>
+    <div class="content">
         <button id="invite-co-worker">Invite a Co-Worker</button>
+        <br><br>
         <button id="share-wishes">Share Your Wishes!</button>
     </div>
 </div>
-
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const shareButtons = document.querySelectorAll(".share-btn");
-    const modal = document.getElementById("share-modal");
-    const closeBtn = document.querySelector(".close");
-    
-    let selectedWishlistId = null; // Store the selected wishlist ID
+    const popupBox = document.getElementById("popup-box");
+    const closeBtn = popupBox.querySelector(".close");
+    let selectedWishlistId = null;
 
+    // When a share button is clicked, position and show the popup.
     shareButtons.forEach(button => {
         button.addEventListener("click", function () {
             selectedWishlistId = this.dataset.wishlistId;
-            modal.style.display = "block";
+            // Reset invite button text and stored URL.
+            const inviteButton = document.getElementById("invite-co-worker");
+            inviteButton.textContent = "Invite a Co-Worker";
+            inviteButton.removeAttribute("data-invite-url");
+
+            const rect = this.getBoundingClientRect();
+            // Adjust popup position as needed.
+            popupBox.style.left = `${rect.left}px`;
+            popupBox.style.top = `${rect.top + rect.height + 8}px`;
+            popupBox.style.display = "block";
         });
     });
 
+    // Close popup when the close button is clicked.
     closeBtn.addEventListener("click", function () {
-        modal.style.display = "none";
+        popupBox.style.display = "none";
     });
 
+    // Optionally close the popup if clicking outside.
     window.addEventListener("click", function (event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
+        if (!popupBox.contains(event.target) && !event.target.classList.contains("share-btn")) {
+            popupBox.style.display = "none";
         }
     });
 
-    // Handle Invite a Co-Worker Click
-    document.getElementById("invite-co-worker").addEventListener("click", async function () {
-        try {
-            const response = await fetch("{{path('app_invitation_new')}}", {
+    // Invite button click: first click fetches URL, second click copies it.
+    document.getElementById("invite-co-worker").addEventListener("click", function () {
+        const inviteButton = this;
+        // Check if URL is already generated.
+        if (inviteButton.hasAttribute("data-invite-url")) {
+            // URL exists, copy it.
+            const url = inviteButton.getAttribute("data-invite-url");
+            navigator.clipboard.writeText(url)
+                .then(() => {
+                    alert("URL was copied to clipboard successfully!");
+                    popupBox.style.display = "none";
+                })
+                .catch(error => {
+                    console.error("Clipboard write failed:", error);
+                    alert("Failed to copy URL to clipboard.");
+                });
+        } else {
+            // Fetch the invite URL.
+            fetch("{{ path('app_invitation_new') }}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ wishlist_id: selectedWishlistId })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(responseData => {
+                if (responseData.joint_creation_URL) {
+                    // Save URL in a data attribute and change button text.
+                    inviteButton.setAttribute("data-invite-url", responseData.joint_creation_URL);
+                    inviteButton.textContent = "Copy Invite URL";
+                    alert("Invite URL generated. Click the button again to copy it.");
+                } else {
+                    alert("Failed to generate invite link.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Failed to send invitation.");
             });
-
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-
-            const responseData = await response.json();
-            navigator.clipboard.writeText(responseData.url).then(() => {
-                alert("URL was copied to clipboard successfully!");
-            }).catch(err => {
-                alert("Error copying URL to clipboard: " +  err);
-            });
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Failed to send invitation.");
         }
     });
 
-    // Handle Share Your Wishes Click
+    // Share Your Wishes action placeholder.
     document.getElementById("share-wishes").addEventListener("click", function () {
         alert("Sharing your wishes! (Implement your sharing logic here)");
     });
 });
-
-
 </script>
+
 
 {% endblock %}
