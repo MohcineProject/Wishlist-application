@@ -32,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
@@ -59,8 +59,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Wishlist::class)]
     private Collection $wishlists;
 
-    #[ORM\OneToMany(mappedBy: 'invitedUser', targetEntity: Item::class)]
-    private Collection $invitations;
+    // #[ORM\OneToMany(mappedBy: 'invitedUser', targetEntity: Item::class)]
+    // private Collection $invitations;
+
+
+    #[ORM\OneToMany(mappedBy: 'buyer', targetEntity: PurchaseProof::class, cascade: ['persist', 'remove'])]
+    private Collection $purchaseProofs;
 
     public function __construct()
     {

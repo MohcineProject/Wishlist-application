@@ -33,7 +33,6 @@ class HomeController extends AbstractController
             $links['My Wishlists'] = $this->generateUrl('app_wishlist_index');
             $links['Profile'] = $this->generateUrl('user_profile');
             $links['Logout'] = $this->generateUrl('logout');
-            dump($user->getId());
             $links['See my purchase proofs'] = $this->generateUrl('user_purchase_proofs');
         
             

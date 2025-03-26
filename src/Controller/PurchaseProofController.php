@@ -47,4 +47,6 @@ class PurchaseProofController extends AbstractController
             'item' => $item,
         ]);
     }
+
+    
 }

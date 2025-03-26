@@ -32,6 +32,9 @@ class RegistrationController extends AbstractController
             // Rediriger vers la page de connexion
             return $this->redirectToRoute('login');
         }
+        else {
+            // Si le formulaire n'est pas valide, les erreurs seront disponibles dans la vue
+        }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
