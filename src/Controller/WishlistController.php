@@ -47,14 +47,21 @@ final class WishlistController extends AbstractController
         ]);
     }
 
-    // Method to display a specific wishlist
     #[Route('/{id}', name: 'app_wishlist_show', methods: ['GET'])]
-    public function show(Wishlist $wishlist): Response
-    {
-        return $this->render('wishlist/show.html.twig', [
-            'wishlist' => $wishlist, // Pass the wishlist entity to the template
-        ]);
-    }
+public function show(Wishlist $wishlist, Request $request): Response
+{
+    $sortBy = $request->query->get('sort', 'price_asc');
+    $searchQuery = $request->query->get('search', '');
+
+    return $this->render('wishlist/show.html.twig', [
+        'wishlist' => $wishlist,
+        'view_mode' => 'grid',
+        'sort_by' => $sortBy,
+        'search_query' => $searchQuery,
+    ]);
+}
+
+    
 
     // Method to edit an existing wishlist
     #[Route('/{id}/edit', name: 'app_wishlist_edit', methods: ['GET', 'POST'])]

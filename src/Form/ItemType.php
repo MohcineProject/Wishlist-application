@@ -20,11 +20,11 @@ class ItemType extends AbstractType
             ->add('price', NumberType::class, ['label' => 'Price'])
             ->add('description', TextType::class, ['label' => 'Description'])
             ->add('imageFile', VichImageType::class, [
-                'label' => 'Upload a new image', // ✅ Change le label pour éviter la confusion
-                'required' => false, // ✅ Permet de ne pas forcer un nouvel upload
-                'allow_delete' => false, // ✅ Désactive la suppression automatique
-                'download_uri' => false, // ✅ Désactive le lien de téléchargement
-                'image_uri' => false, // ✅ Empêche l'affichage de l'image dans l'input
+                'label' => 'Upload a new image',
+                'required' => false,
+                'allow_delete' => false,
+                'download_uri' => false,
+                'image_uri' => false,
             ]);
     }
 
@@ -32,9 +32,9 @@ class ItemType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Item::class,
-            'csrf_protection' => true, // ✅ Active la protection CSRF
-            'csrf_field_name' => '_token', // ✅ Définit le nom du champ CSRF
-            'csrf_token_id'   => 'submit', // ✅ Identifie le token
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id'   => 'submit',
         ]);
     }
 }
