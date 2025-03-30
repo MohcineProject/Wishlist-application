@@ -30,7 +30,7 @@ class WishlistRepository extends ServiceEntityRepository
     public function removeWishlist(int $wishlistId) {
         $wishlist = $this->find($wishlistId);
         if ($wishlist) {
-            $this->getEntityManager()->remove($wishlist);
+            $this->getEntityManager()->delete($wishlist);
             $this->getEntityManager()->flush();
         }
     }

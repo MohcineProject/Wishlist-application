@@ -110,7 +110,7 @@ public function show(Wishlist $wishlist, Request $request): Response
     {
         // Validate the CSRF token before deleting the wishlist
         if ($this->isCsrfTokenValid('delete'.$wishlist->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($wishlist); // Remove the wishlist from the database
+            $entityManager->delete($wishlist); // Remove the wishlist from the database
             $entityManager->flush(); // Save changes to the database
         }
 
