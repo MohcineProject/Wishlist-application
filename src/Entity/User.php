@@ -224,4 +224,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
+    public function rejectInvitation(int $invitation_id) {
+        for ($i = 0 ; $i < sizeof($this->invitations) ; $i++ ){
+            if ($this->invitations[$i]->getId() == $invitation_id) {
+                unset($this->invitations[$i]) ;
+            }
+        }
+    }
+
 }

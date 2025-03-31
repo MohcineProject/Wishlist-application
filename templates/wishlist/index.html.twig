@@ -1,14 +1,22 @@
+{# Created by Mohcine Zahdi and Othmane Mounouar #}
 {% extends 'base.html.twig' %}
+
+
 
 {% block title %} My Wishlists {% endblock %}
 
+
+
 {% block body  %} 
+{% block stylesheets %}
+
+{{parent()}}
 
 <style> 
-/* Popup box styling */
+
 .popup-box {
-    display: none; /* Hidden by default */
-    position: fixed; /* Fixed relative to the viewport */
+    display: none; 
+    position: fixed; 
     z-index: 1000;
     background-color: #fff;
     padding: 15px;
@@ -18,7 +26,6 @@
     width: 220px;
 }
 
-/* Close button styling */
 .popup-box .close {
     position: absolute;
     top: 5px;
@@ -27,7 +34,6 @@
     cursor: pointer;
 }
 
-/* Center content inside the popup */
 .popup-box .content {
     text-align: center;
     margin-top: 20px;
@@ -60,8 +66,15 @@ body {
     
 }
 
-a { 
+a {
+
     text-decoration:none ;
+}
+button > a {
+    color : #000000; 
+}
+
+.add-wishlist-btn > a  { 
     color : #EDF3F4 ; 
 }
 
@@ -72,6 +85,8 @@ a:hover{
 .wishlist > a {
     color: #00B8DE;
 }
+{% endblock %}
+
 </style>
 
 <header>
@@ -98,9 +113,9 @@ a:hover{
         <p class="wishlist-footer">{{ wishlist.deadline | date('F j, Y') }}</p>
         
         <!-- Share Button -->
-        <button type="button" class="share-btn" data-wishlist-id="{{ wishlist.id }}">↗</button>
+        <button title="Share wishlist" type="button" class="share-btn" data-wishlist-id="{{ wishlist.id }}">↗</button>
 
-        <button title="Edit title"><a href="{{ path('app_wishlist_edit', { 'id': wishlist.id }) }}">✏</a></button>
+        <button title="Edit wishlist"><a href="{{ path('app_wishlist_edit', { 'id': wishlist.id }) }}">✏</a></button>
         <form action="{{ path('app_wishlist_delete', {'id': wishlist.id}) }}" method="POST" style="display: inline-block">
             <input type="hidden" name="_method" value="DELETE"> 
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ wishlist.id) }}"> 
@@ -127,42 +142,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const closeBtn = popupBox.querySelector(".close");
     let selectedWishlistId = null;
 
-    // When a share button is clicked, position and show the popup.
-    shareButtons.forEach(button => {
-        button.addEventListener("click", function () {
-            selectedWishlistId = this.dataset.wishlistId;
-            // Reset invite button text and stored URL.
-            const inviteButton = document.getElementById("invite-co-worker");
-            inviteButton.textContent = "Invite a Co-Worker";
-            inviteButton.removeAttribute("data-invite-url");
-
-            const rect = this.getBoundingClientRect();
-            // Adjust popup position as needed.
-            popupBox.style.left = `${rect.left}px`;
-            popupBox.style.top = `${rect.top + rect.height + 8}px`;
-            popupBox.style.display = "block";
-        });
-    });
-
-    // Close popup when the close button is clicked.
-    closeBtn.addEventListener("click", function () {
-        popupBox.style.display = "none";
-    });
-
-    // Optionally close the popup if clicking outside.
-    window.addEventListener("click", function (event) {
-        if (!popupBox.contains(event.target) && !event.target.classList.contains("share-btn")) {
-            popupBox.style.display = "none";
-        }
-    });
-
-    // Invite button click: first click fetches URL, second click copies it.
-    document.getElementById("invite-co-worker").addEventListener("click", function () {
-        const inviteButton = this;
-        // Check if URL is already generated.
-        if (inviteButton.hasAttribute("data-invite-url")) {
-            // URL exists, copy it.
-            const url = inviteButton.getAttribute("data-invite-url");
+    // Helper function to handle the URLs
+    function handleUrlButton(button, urlPath, dataAttr, buttonCopyText, successAlertText, failureAlertText) {
+        if (button.hasAttribute(dataAttr)) {
+            // If the URL exists, copy it.
+            const url = button.getAttribute(dataAttr);
             navigator.clipboard.writeText(url)
                 .then(() => {
                     alert("URL was copied to clipboard successfully!");
@@ -173,8 +157,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert("Failed to copy URL to clipboard.");
                 });
         } else {
-            // Fetch the invite URL.
-            fetch("{{ path('app_invitation_new') }}", {
+            // Fetch the URL otherwise
+            fetch(urlPath, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -190,11 +174,11 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(responseData => {
                 if (responseData.joint_creation_URL) {
                     // Save URL in a data attribute and change button text.
-                    inviteButton.setAttribute("data-invite-url", responseData.joint_creation_URL);
-                    inviteButton.textContent = "Copy Invite URL";
-                    alert("Invite URL generated. Click the button again to copy it.");
+                    button.setAttribute(dataAttr, responseData.joint_creation_URL);
+                    button.textContent = buttonCopyText;
+                    alert(successAlertText);
                 } else {
-                    alert("Failed to generate invite link.");
+                    alert(failureAlertText);
                 }
             })
             .catch(error => {
@@ -202,14 +186,66 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert("Failed to send invitation.");
             });
         }
+    }
+
+    // Reset buttons state when a share button is clicked.
+    shareButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            selectedWishlistId = this.dataset.wishlistId;
+            // Reset both buttons.
+            const inviteButton = document.getElementById("invite-co-worker");
+            inviteButton.textContent = "Invite a Co-Worker";
+            inviteButton.removeAttribute("data-invite-url");
+
+            const shareWishesButton = document.getElementById("share-wishes");
+            shareWishesButton.textContent = "Share Your Wishes";
+            shareWishesButton.removeAttribute("data-share-url");
+
+            const rect = this.getBoundingClientRect();
+            popupBox.style.left = `${rect.left}px`;
+            popupBox.style.top = `${rect.top + rect.height + 8}px`;
+            popupBox.style.display = "block";
+        });
     });
 
-    // Share Your Wishes action placeholder.
+    // Close popup when the close button is clicked.
+    closeBtn.addEventListener("click", function () {
+        popupBox.style.display = "none";
+    });
+
+    // Close the popup if clicking outside.
+    window.addEventListener("click", function (event) {
+        if (!popupBox.contains(event.target) && !event.target.classList.contains("share-btn")) {
+            popupBox.style.display = "none";
+        }
+    });
+
+    // Event listener for the Invite button.
+    document.getElementById("invite-co-worker").addEventListener("click", function () {
+        handleUrlButton(
+            this,
+            "{{ path('app_invitation_new') }}",
+            "data-invite-url",
+            "Copy Invite URL",
+            "Invite URL generated. Click the button again to copy it.",
+            "Failed to generate invite link."
+        );
+    });
+
+    // Event listener for the Share Your Wishes button.
     document.getElementById("share-wishes").addEventListener("click", function () {
-        alert("Sharing your wishes! (Implement your sharing logic here)");
+        handleUrlButton(
+            this,
+            "{{ path('app_gifts_purchase_new') }}",
+            "data-share-url",
+            "Copy Share URL",
+            "Share URL generated. Click the button again to copy it.",
+            "Failed to generate share link."
+        );
     });
 });
 </script>
+
 
 
 {% endblock %}

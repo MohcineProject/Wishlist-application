@@ -1,5 +1,6 @@
 <?php
 
+// Created by Mohcine Zahdi and Othmane Mounouar
 namespace App\Entity;
 
 use App\Repository\InvitationRepository;

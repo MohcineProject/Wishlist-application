@@ -1,5 +1,7 @@
 <?php
 
+// Created by Mohcine Zahdi and Othmane Mounouar 
+
 namespace App\Controller;
 
 use App\Entity\Invitation;
@@ -88,6 +90,20 @@ final class InvitationController extends AbstractController
     } else {
         return $this->createAccessDeniedException("Vous ne pouvez pas accèder à cette API sans authentification!") ;
     }
+    }
+
+
+    #[Route("/reject_invitation/{id}"  , name: 'app_reject_invitation' , methods:['POST', 'GET'])] 
+    public function rejectInvitation(Invitation $invitation , EntityManagerInterface $entityManager){
+
+        $user = $this->getUser();
+        if ($user) {
+            $user->rejectInvitation($invitation->getId());
+            $entityManager->flush();
+            return $this->redirectToRoute('app_invitation_index', [], Response::HTTP_SEE_OTHER);
+        }else {
+            return $this->createAccessDeniedException("Vous ne pouvez pas accèder à cette API sans authentification!") ;
+        }
     }
 
 
