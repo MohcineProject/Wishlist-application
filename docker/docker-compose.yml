@@ -6,7 +6,7 @@ services:
         container_name: db_docker_symfony
         restart: always
         volumes:
-          - ./server/mysql_data:/var/lib/mysql    #this line maps the content of ./server/mysql_data in your pc to the /var/lib/mysql of the container
+          - ./server/mysql_data:/var/lib/mysql   
         ports:
             - 3306:3306
         environment:

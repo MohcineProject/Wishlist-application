@@ -56,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Wishlist::class)]
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Wishlist::class , cascade: ['remove'])]
     private Collection $wishlists;
 
     // #[ORM\OneToMany(mappedBy: 'invitedUser', targetEntity: Item::class)]

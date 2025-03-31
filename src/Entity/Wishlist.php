@@ -34,8 +34,8 @@ class Wishlist
 
     private Collection $items;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'wishlists', cascade: ['remove'] )]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'wishlists' )]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
     public function getOwner(): ?User

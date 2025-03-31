@@ -47,6 +47,8 @@ final class WishlistController extends AbstractController
         ]);
     }
 
+
+// Method to display a wishlist items 
     #[Route('/{id}', name: 'app_wishlist_show', methods: ['GET'])]
 public function show(Wishlist $wishlist, Request $request): Response
     {
@@ -87,7 +89,6 @@ public function show(Wishlist $wishlist, Request $request): Response
     public function edit(Request $request, Wishlist $wishlist, EntityManagerInterface $entityManager): Response
     {
        
-        
         $form = $this->createForm(WishlistType::class, $wishlist);
         $form->handleRequest($request);
 
@@ -105,12 +106,12 @@ public function show(Wishlist $wishlist, Request $request): Response
     }
 
     // Method to delete a wishlist
-    #[Route('/{id}', name: 'app_wishlist_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_wishlist_delete', methods: ['DELETE'])]
     public function delete(Request $request, Wishlist $wishlist, EntityManagerInterface $entityManager): Response
     {
         // Validate the CSRF token before deleting the wishlist
         if ($this->isCsrfTokenValid('delete'.$wishlist->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->delete($wishlist); // Remove the wishlist from the database
+            $entityManager->remove($wishlist); // Remove the wishlist from the database
             $entityManager->flush(); // Save changes to the database
         }
 

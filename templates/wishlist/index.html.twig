@@ -59,7 +59,11 @@
         <button type="button" class="share-btn" data-wishlist-id="{{ wishlist.id }}">↗</button>
 
         <button title="Edit title"><a href="{{ path('app_wishlist_edit', { 'id': wishlist.id }) }}">✏</a></button>
-        <button title="Delete wishlist"> <a href="{{path('app_wishlist_delete', {'id':wishlist.id} ) }}">🗑</a>  </button>
+        <form action="{{ path('app_wishlist_delete', {'id': wishlist.id}) }}" method="POST" style="display: inline-block">
+            <input type="hidden" name="_method" value="DELETE"> 
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ wishlist.id) }}"> 
+            <button type="submit" title="Delete wishlist">🗑</button>
+        </form>
     </div>
     {% endfor %}
 </div>
