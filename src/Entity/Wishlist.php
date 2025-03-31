@@ -1,5 +1,5 @@
 <?php
-// Edited by Mohcine Zahdi and Othmane Mounouar
+// Created by Mohcine Zahdi and Othmane Mounouar
 namespace App\Entity;
 
 use App\Repository\WishlistRepository;
@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\Types\Array_;
 
 #[ORM\Entity(repositoryClass: WishlistRepository::class)]
 class Wishlist

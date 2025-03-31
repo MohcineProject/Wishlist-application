@@ -10,3 +10,4 @@ vendor/
 docker/server
 migrations/
 public/uploads
+archive/
