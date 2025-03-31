@@ -56,7 +56,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Wishlist::class , cascade: ['remove'])]
+    #[ORM\ManyToMany(inversedBy: 'authors', targetEntity: Wishlist::class , orphanRemoval: true)]
+    #[ORM\JoinTable(name: 'users_wishlists')]
     private Collection $wishlists;
 
     // #[ORM\OneToMany(mappedBy: 'invitedUser', targetEntity: Item::class)]
@@ -70,9 +71,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\ManyToMany(targetEntity: Invitation::class)]
     private Collection $invitations;
-
-
-
 
 
     public function __construct()
@@ -177,24 +175,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->wishlists;
     }
 
-    public function addToAuthorWhishlists(Wishlist $wishlist){
+    public function addToAuthorWishlists(Wishlist $wishlist){
         if (!$this->wishlists->contains($wishlist)) {
             $this->wishlists[] = $wishlist;
-        }       
+            $wishlist->addAuthor($this) ;
+        }
     }
-    // public function getInvitations(): Collection
-    // {
-    //     return $this->invitations;
-    // }
 
-    // public function addInvitation(Item $invitation): static
-    // {
-    //     if (!$this->invitations->contains($invitation)) {
-    //         $this->invitations[] = $invitation;
-    //         $invitation->setInvitedUser($this);
-    //     }
-
-    // }
+    public function removeWishlist(Wishlist $wishlist){
+        if ($this->wishlists->contains($wishlist)) {
+            $this->wishlists->removeElement($wishlist);
+            $wishlist->removeAuthor($this);
+        }
+    }
 
     /**
      * @return Collection<int, Invitation>
@@ -225,7 +218,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($this->invitations[$i]->getId() == $invitation_id) {
                 $wishlist = $this->invitations[$i]->getWishlist() ;
                 unset($this->invitations[$i]) ;
-                $this->addToAuthorWhishlists($wishlist);
+                $this->addToAuthorWishlists($wishlist);
             }
         }
     }

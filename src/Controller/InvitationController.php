@@ -34,10 +34,10 @@ final class InvitationController extends AbstractController
     {
         $invitation = new Invitation();
         
-        $user = $this->getUser() ; 
+        $user = $this->getUser() ;
 
-        $data = json_decode($request->getContent(),true) ; 
-        $wishlist_id = $data["wishlist_id"] ?? null ; 
+        $data = json_decode($request->getContent(),true) ;
+        $wishlist_id = $data["wishlist_id"] ?? null ;
 
         if (!$wishlist_id) {
             return new JsonResponse(["error"=>"Missing wishlist_id"] , Response::HTTP_BAD_REQUEST) ; 
@@ -45,43 +45,26 @@ final class InvitationController extends AbstractController
 
         if (!$user) {
             return $this->createAccessDeniedException('User is not connected');
-        } 
+        }
+        $wishlist = $entityManager->find(Wishlist::class, $wishlist_id);
 
-        $invitation->setInviter($user);
-        $invitation->setWishlist($entityManager->find(Wishlist::class, $wishlist_id));
-        $entityManager->persist($invitation);
-        $entityManager->flush();
+        $existing_invitation = $entityManager->getRepository(Invitation::class)->findOneBy(['wishlist'=>$wishlist  , 'inviter'=>$user]) ;
+        if (!$existing_invitation) {
+            $invitation->setInviter($user);
+            $invitation->setWishlist($entityManager->find(Wishlist::class, $wishlist_id));
+            $entityManager->persist($invitation);
+            $entityManager->flush();
+
+        } else {
+            $invitation = $existing_invitation ;
+        }
 
         return new JsonResponse(["joint_creation_URL"=>  InvitationController::generateJointCreationURL($invitation->getId())] , Response::HTTP_CREATED);
         
   
     }
 
-    #[Route('/{id}', name: 'app_invitation_show', methods: ['GET'])]
-    public function show(Invitation $invitation): Response
-    {
-        return $this->render('invitation/show.html.twig', [
-            'invitation' => $invitation,
-        ]);
-    }
 
-    #[Route('/{id}/edit', name: 'app_invitation_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Invitation $invitation, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(InvitationType::class, $invitation);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_invitation_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('invitation/edit.html.twig', [
-            'invitation' => $invitation,
-            'form' => $form,
-        ]);
-    }
 
     #[Route('/{id}', name: 'app_invitation_delete', methods: ['POST'])]
     public function delete(Request $request, Invitation $invitation, EntityManagerInterface $entityManager): Response
@@ -96,15 +79,17 @@ final class InvitationController extends AbstractController
 
 
     #[Route('/accept_invitation/{id}' , name: 'app_accept_invitation' , methods:['POST', 'GET'])]
-    public function acceptInvitation(Invitation $invitation ){
+    public function acceptInvitation(Invitation $invitation ,  EntityManagerInterface $entityManager ){
         $user = $this->getUser();
         if ($user) {
         $user->acceptInvitation($invitation->getId());
-        return new Response('Invitation accepté avec succès!', Response::HTTP_OK);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_invitation_index', [], Response::HTTP_SEE_OTHER);
     } else {
-        return $this->createAccessDeniedException("Vous pouvez accèder cette API sans authentification!") ;
+        return $this->createAccessDeniedException("Vous ne pouvez pas accèder à cette API sans authentification!") ;
     }
     }
+
 
 
 
@@ -116,23 +101,23 @@ final class InvitationController extends AbstractController
         $token = base64_encode($invitation_id . '|' . $hash);
         
         $serverIp = $_SERVER['SERVER_ADDR'] ?? '127.0.0.1';
-        return sprintf('http://%s/login?invitation_token=%s', $serverIp, rtrim(strtr($token, '+/', '-_'), '='));
+        return sprintf('http://%s:8000/login?invitation_token=%s', $serverIp, rtrim(strtr($token, '+/', '-_'), '='));
     }
     
 
     public static function verifyJointCreationToken(string $token): ?int {
-        $secretKey = 'top_secret_key_789/*-'; 
+        $secretKey = 'top_secret_key_789/*-';
     
-        $token = strtr($token, '-_', '+/'); 
+        $token = strtr($token, '-_', '+/');
         $token = base64_decode($token);
     
         if (!$token) {
-            return null; 
+            return null;
         }
     
         $parts = explode('|', $token);
         if (count($parts) !== 2) {
-            return null; 
+            return null;
         }
     
         [$invitation_id, $hash] = $parts;
@@ -140,7 +125,7 @@ final class InvitationController extends AbstractController
         $expectedHash = hash_hmac('sha256', $invitation_id, $secretKey);
     
         if (!hash_equals($expectedHash, $hash)) {
-            return null; 
+            return null;
         }
     
         return (int) $invitation_id;
@@ -150,17 +135,3 @@ final class InvitationController extends AbstractController
 
 }
 
-      /* $form = $this->createForm(InvitationType::class, $invitation);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($invitation);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_invitation_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('invitation/new.html.twig', [
-            'invitation' => $invitation,
-            'form' => $form,
-        ]); */

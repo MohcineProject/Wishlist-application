@@ -34,24 +34,34 @@ class Wishlist
 
     private Collection $items;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'wishlists' )]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner = null;
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'wishlists' )]
+    private Collection $authors ;
 
-    public function getOwner(): ?User
+    public function getAuthors(): Collection
     {
-        return $this->owner;
+        return $this->authors;
     }
 
-    public function setOwner(?User $owner): static
+    public function addAuthor(?User $author): void
     {
-        $this->owner = $owner;
-        return $this;
+        if (!$this->authors->contains($author)) {
+            $this->authors->add($author);
+            $author->addToAuthorWishlists($this);
+        }
+    }
+
+
+    public function removeAuthor(?User $author): void {
+        if ($this->authors->contains($author)) {
+            $this->authors->removeElement($author);
+            $author->removeWishlist($this) ;
+        }
     }
 
     public function __construct()
     {
         $this->items = new ArrayCollection();
+        $this->authors = new ArrayCollection();
     }
 
     public function getId(): ?int

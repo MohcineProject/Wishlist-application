@@ -29,9 +29,12 @@ class HomeController extends AbstractController
         if ($invitation_id) {
             $user = $this->getUser();
              if ($user) {
-                $user->addInvitation($entityManager->find(Invitation::class, $invitation_id));
-                $entityManager->persist($user);
-                $entityManager->flush();
+                $invitation = $entityManager->find(Invitation::class, $invitation_id) ;
+                if ($invitation) {
+                    $user->addInvitation($invitation);
+                    $entityManager->flush();
+                }
+                $request->getSession()->remove("invitation_token");
              }
 
         }

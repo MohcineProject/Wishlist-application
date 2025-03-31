@@ -17,12 +17,12 @@ class Invitation
 
 
 
-    #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne()]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Wishlist $wishlist = null;
 
-    #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne()]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $inviter = null;
 
 

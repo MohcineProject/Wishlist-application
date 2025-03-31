@@ -28,9 +28,7 @@
                 {% for invitation in invitations %}
                     <div class="wishlist">
                         <h2>
-                            <a href="{{ path('app_invitation_show', {'id': invitation.id}) }}">
                                 Wishlist {{ invitation.id }}
-                            </a>
                         </h2>
                         <div class="wishlist-footer">
                             <p>Inviter: {{ invitation.inviter.firstName ?? '' }} {{ invitation.inviter.lastName ?? 'Unavailable' }}</p>

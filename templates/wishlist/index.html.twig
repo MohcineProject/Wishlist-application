@@ -32,6 +32,46 @@
     text-align: center;
     margin-top: 20px;
 }
+
+
+.sub-header {
+    background : #00B8DE  ; 
+    padding : 20px ;
+    display: flex;
+    flex-direction: row-reverse;
+    
+}
+
+header {
+    display: flex;
+    align-items: center;
+    background: #14223c;
+    color: white;
+    padding: 10px;
+    gap: 15px;
+}
+
+body {
+    background : #EDF3F4 ; 
+}
+
+.add-wishlist-btn{
+    background: #14223c;
+    
+}
+
+a { 
+    text-decoration:none ;
+    color : #EDF3F4 ; 
+}
+
+a:hover{
+    color : #EDF3F4 ; 
+}
+
+.wishlist > a {
+    color: #00B8DE;
+}
 </style>
 
 <header>
@@ -40,7 +80,9 @@
     <input type="text" class="search-bar" placeholder="Search...">
 </header>
 
-<a href="{{ path('app_wishlist_new') }}" class="add-wishlist-btn">Add wishlist</a>
+<div class="sub-header">
+<button  class="add-wishlist-btn"> <a href="{{ path('app_wishlist_new') }}"> Add wishlist</a> </button>
+</div>
 
 <div class="container">
     {% for wishlist in wishlists %}

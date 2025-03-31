@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Wishlist;
+use App\Form\WishlistType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -44,7 +46,10 @@ final class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $wishlist->setOwner($this->getUser());
+            $user = $this->getUser();
+            $wishlist->addAuthor($user);
+            $user->addToAuthorWishlists($wishlist);
+
             $entityManager->persist($wishlist);
             $entityManager->flush();
 

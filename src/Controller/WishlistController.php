@@ -34,7 +34,9 @@ final class WishlistController extends AbstractController
         $form->handleRequest($request); // Handle the form submission
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $wishlist->setOwner($this->getUser());
+            $user = $this->getUser();
+            $wishlist->addAuthor($user);
+            $user->addToAuthorWishlists($wishlist);
             $entityManager->persist($wishlist); // Persist the new wishlist to the database
             $entityManager->flush(); // Save changes to the database
 
@@ -111,7 +113,11 @@ public function show(Wishlist $wishlist, Request $request): Response
     {
         // Validate the CSRF token before deleting the wishlist
         if ($this->isCsrfTokenValid('delete'.$wishlist->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($wishlist); // Remove the wishlist from the database
+            $user = $this->getUser();
+            $user->removeWishlist($wishlist);
+            if ($wishlist->getAuthors()->isEmpty()){ // If the wishlist has no authors
+                $entityManager->remove($wishlist); // Remove the wishlist from the database
+            }
             $entityManager->flush(); // Save changes to the database
         }
 
