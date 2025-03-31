@@ -1,5 +1,6 @@
 <?php
 // Edited By Néo Schobert & Yanis Bentoumi
+
 namespace App\Repository;
 
 use App\Entity\PurchaseProof;
